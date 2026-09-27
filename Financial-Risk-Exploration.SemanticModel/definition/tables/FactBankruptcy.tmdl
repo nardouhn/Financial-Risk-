@@ -1,0 +1,525 @@
+table FactBankruptcy
+	lineageTag: 39884835-9f89-40ac-adad-2651d23b1aed
+
+	measure 'Total Records' =
+			
+			COUNTROWS(FactBankruptcy)
+		formatString: 0
+		lineageTag: 2b48b9e2-6106-4056-a9ef-577899bfa92a
+
+	measure 'Total Companies' =
+			
+			DISTINCTCOUNT(FactBankruptcy[MaCongTy])
+		formatString: 0
+		lineageTag: 03a1962e-fec0-4575-a1ba-2e93e69c16bb
+
+	measure 'Failed Records' =
+			
+			CALCULATE(
+			    COUNTROWS(FactBankruptcy),
+			    FactBankruptcy[TrangThaiPhaSan] = "failed"
+			)
+		formatString: 0
+		lineageTag: cbbe91e1-2e2c-481f-81ff-910ace7a0c82
+
+	measure 'Alive Records' =
+			
+			CALCULATE(
+			    COUNTROWS(FactBankruptcy),
+			    FactBankruptcy[TrangThaiPhaSan] = "alive"
+			)
+		formatString: 0
+		lineageTag: c49cede4-944a-4ee3-b35c-dd67f899f9e6
+
+	measure 'Bankruptcy Rate' =
+			
+			DIVIDE(
+			    [Failed Records],
+			    [Total Records],
+			    0
+			)
+		lineageTag: 9abd76c7-2ff9-41d6-a5f1-e4beb8e8e243
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Min Year' =
+			
+			MIN(FactBankruptcy[Nam])
+		formatString: 0
+		lineageTag: 8339e98a-f98e-4a91-8e44-74383c13bf6f
+
+	measure 'Max Year' =
+			
+			MAX(FactBankruptcy[Nam])
+		formatString: 0
+		lineageTag: 390edee9-9713-4010-8e7a-6048429c9443
+
+	measure 'Year Range' =
+			
+			FORMAT([Min Year], "0") & " – " & FORMAT([Max Year], "0")
+		lineageTag: 4db08915-c0b4-491e-b608-fcb30e7e7a5d
+
+	measure 'Average Liquidity' =
+			
+			AVERAGE(FactBankruptcy[Liquidity_Ratio])
+		lineageTag: 3e792d9b-0136-43a6-9b62-f56c66dd6c3a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Leverage' =
+			
+			AVERAGE(FactBankruptcy[Leverage_Ratio])
+		lineageTag: f642ac09-4079-4f0b-81e3-996228039d8d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average ROA' =
+			
+			AVERAGE(FactBankruptcy[ROA])
+		lineageTag: 2a60c33e-15b1-4048-93fd-fb2823d7819f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Retained Earnings' =
+			
+			AVERAGE(FactBankruptcy[Retained_Earnings_Ratio])
+		lineageTag: b27e5887-5dd1-49a2-9623-69bfc7a61e7e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TLTA Above 1 Count' =
+			
+			CALCULATE(
+			    COUNTROWS(FactBankruptcy),
+			    FactBankruptcy[Leverage_Ratio] > 1
+			)
+		formatString: 0
+		lineageTag: 1a7ca094-0542-4c4a-a823-167baad5f42e
+
+	measure 'Bankruptcy Rate TLTA > 1' =
+			
+			DIVIDE(
+			    CALCULATE(
+			        COUNTROWS(FactBankruptcy),
+			        FactBankruptcy[Leverage_Ratio] > 1,
+			        FactBankruptcy[TrangThaiPhaSan] = "failed"
+			    ),
+			    CALCULATE(
+			        COUNTROWS(FactBankruptcy),
+			        FactBankruptcy[Leverage_Ratio] > 1
+			    ),
+			    0
+			)
+		lineageTag: 338dc07d-7dbf-4f4e-887d-6db8e5187cb3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Bankruptcy Rate TLTA <' =
+			1 =
+			DIVIDE(
+			    CALCULATE(
+			        COUNTROWS(FactBankruptcy),
+			        FactBankruptcy[Leverage_Ratio] <= 1,
+			        FactBankruptcy[TrangThaiPhaSan] = "failed"
+			    ),
+			    CALCULATE(
+			        COUNTROWS(FactBankruptcy),
+			        FactBankruptcy[Leverage_Ratio] <= 1
+			    ),
+			    0
+			)
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b478764a-93e5-46c5-abe2-61905bedf4bd
+
+	measure 'Average Total Assets' =
+			
+			AVERAGE(FactBankruptcy[TongTaiSan])
+		lineageTag: 5e1b61d9-a312-4105-9065-4555612d7d7a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Market Value' =
+			
+			AVERAGE(FactBankruptcy[VonHoaThiTruong])
+		lineageTag: 83616cdc-b46e-4380-aaec-82d41544848f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MaCongTy
+		dataType: string
+		lineageTag: fe3ee3f4-4123-4fd0-989a-6b68e8082cdf
+		summarizeBy: none
+		sourceColumn: MaCongTy
+
+		annotation SummarizationSetBy = Automatic
+
+	column TrangThaiPhaSan
+		dataType: string
+		lineageTag: a67d2a90-2c8c-499d-9605-cabf6e294ef7
+		summarizeBy: none
+		sourceColumn: TrangThaiPhaSan
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nam
+		dataType: int64
+		formatString: 0
+		lineageTag: 94175e88-377e-4238-addc-d53974994070
+		summarizeBy: sum
+		sourceColumn: Nam
+
+		annotation SummarizationSetBy = Automatic
+
+	column TaiSanNganHan
+		dataType: double
+		lineageTag: 074104ee-16fb-4eec-96c9-8504aaa2fc85
+		summarizeBy: sum
+		sourceColumn: TaiSanNganHan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column GiaVonHangBan
+		dataType: double
+		lineageTag: edd543aa-710c-4395-83b4-bad51db4c041
+		summarizeBy: sum
+		sourceColumn: GiaVonHangBan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column KhauHao
+		dataType: double
+		lineageTag: 71e6f0bb-a212-44c3-b73b-1dcff0af60a4
+		summarizeBy: sum
+		sourceColumn: KhauHao
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EBITDA
+		dataType: double
+		lineageTag: 9eb5ef57-cb32-457a-a8a7-73d05f8cd794
+		summarizeBy: sum
+		sourceColumn: EBITDA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column HangTonKho
+		dataType: double
+		lineageTag: e73e6fa6-6c7f-4a09-b364-36682906095f
+		summarizeBy: sum
+		sourceColumn: HangTonKho
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LoiNhuanRong
+		dataType: double
+		lineageTag: 54728c7c-165a-4dd8-811f-bc35dc401d86
+		summarizeBy: sum
+		sourceColumn: LoiNhuanRong
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PhaiThu
+		dataType: double
+		lineageTag: c8682fab-5938-4bc0-bc54-6c570347fe6c
+		summarizeBy: sum
+		sourceColumn: PhaiThu
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column VonHoaThiTruong
+		dataType: double
+		lineageTag: 0c5d4a43-4ae3-4e12-ba3a-3f3e3850829a
+		summarizeBy: sum
+		sourceColumn: VonHoaThiTruong
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DoanhThuThuan
+		dataType: double
+		lineageTag: da28a85b-55b3-4716-a87e-d5f4b56902d7
+		summarizeBy: sum
+		sourceColumn: DoanhThuThuan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TongTaiSan
+		dataType: double
+		lineageTag: 811bd666-3ec0-4fd3-bf86-3b9ef753bb49
+		summarizeBy: sum
+		sourceColumn: TongTaiSan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NoDaiHan
+		dataType: double
+		lineageTag: 19c2ea0f-1634-4006-b4d6-802137274448
+		summarizeBy: sum
+		sourceColumn: NoDaiHan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EBIT
+		dataType: double
+		lineageTag: f97dc169-d0fe-446a-ada5-170e90b7811a
+		summarizeBy: sum
+		sourceColumn: EBIT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LoiNhuanGop
+		dataType: double
+		lineageTag: 7b347df7-72e8-49c6-b539-43f980daf4a2
+		summarizeBy: sum
+		sourceColumn: LoiNhuanGop
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NoNganHan
+		dataType: double
+		lineageTag: 5b8708af-d755-4f01-b85a-d4c6684fa14c
+		summarizeBy: sum
+		sourceColumn: NoNganHan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LoiNhuanGiuLai
+		dataType: double
+		lineageTag: 1834aa71-891b-46b2-9a5e-1091a19bfa88
+		summarizeBy: sum
+		sourceColumn: LoiNhuanGiuLai
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TongDoanhThu
+		dataType: double
+		lineageTag: 51010760-4488-422b-9293-deb8a2d94b7b
+		summarizeBy: sum
+		sourceColumn: TongDoanhThu
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TongNoPhaiTra
+		dataType: double
+		lineageTag: f47607b0-70c5-4649-834e-d2554dedcdb2
+		summarizeBy: sum
+		sourceColumn: TongNoPhaiTra
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ChiPhiHoatDong
+		dataType: double
+		lineageTag: 74b74f61-c86a-47fd-aa08-e2354407b846
+		summarizeBy: sum
+		sourceColumn: ChiPhiHoatDong
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NhanNamTruoc
+		dataType: string
+		lineageTag: ed4120f2-776a-4b2e-b58e-cfcfc3a8abe0
+		summarizeBy: none
+		sourceColumn: NhanNamTruoc
+
+		annotation SummarizationSetBy = Automatic
+
+	column PhaSanNamToi
+		dataType: int64
+		formatString: 0
+		lineageTag: edd3edc6-bb8a-475e-bfdb-d9915ee952ec
+		summarizeBy: sum
+		sourceColumn: PhaSanNamToi
+
+		annotation SummarizationSetBy = Automatic
+
+	column SoNamTruocPS
+		dataType: int64
+		formatString: 0
+		lineageTag: a03ae9a1-cc12-46aa-a952-ebb70b6cdf67
+		summarizeBy: sum
+		sourceColumn: SoNamTruocPS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Liquidity_Ratio
+		dataType: double
+		lineageTag: 452c6918-c49c-497a-add9-d2f93dcb1760
+		summarizeBy: sum
+		sourceColumn: Liquidity_Ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Leverage_Ratio
+		dataType: double
+		lineageTag: 60360402-9206-4ddb-b8fd-ee66b3e22fde
+		summarizeBy: sum
+		sourceColumn: Leverage_Ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ROA
+		dataType: double
+		lineageTag: 27c15968-9f5c-4132-b1f8-ca7e64721d02
+		summarizeBy: sum
+		sourceColumn: ROA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Retained_Earnings_Ratio
+		dataType: double
+		lineageTag: 9b5e5070-0e45-4be1-b826-26b0cb8da581
+		summarizeBy: sum
+		sourceColumn: Retained_Earnings_Ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CurrentAssets_Ratio
+		dataType: double
+		lineageTag: d80a1693-796c-4cb7-a535-2bf4f2b8b91f
+		summarizeBy: sum
+		sourceColumn: CurrentAssets_Ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Log_TotalAssets
+		dataType: double
+		lineageTag: cbc06c47-7ec4-4c55-a449-8f04460a1a51
+		summarizeBy: sum
+		sourceColumn: Log_TotalAssets
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MarketValue_Liabilities
+		dataType: double
+		lineageTag: d8a71c6c-5625-4069-91d0-90d5b9f0ce98
+		summarizeBy: sum
+		sourceColumn: MarketValue_Liabilities
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Leverage_Group
+		dataType: string
+		lineageTag: 864c3625-3800-4009-ad5d-f632d77257b8
+		summarizeBy: none
+		sourceColumn: Leverage_Group
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactBankruptcy = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\tuyet\OneDrive\Máy tính\trực quan hóa\american_bankruptcy_clean.csv"),[Delimiter=",", Columns=24, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(
+				    #"Use First Row as Headers",
+				    {
+				        {"MaCongTy", type text},
+				        {"TrangThaiPhaSan", type text},
+				        {"Nam", Int64.Type},
+				
+				        {"TaiSanNganHan", type number},
+				        {"GiaVonHangBan", type number},
+				        {"KhauHao", type number},
+				        {"EBITDA", type number},
+				        {"HangTonKho", type number},
+				        {"LoiNhuanRong", type number},
+				        {"PhaiThu", type number},
+				        {"VonHoaThiTruong", type number},
+				        {"DoanhThuThuan", type number},
+				        {"TongTaiSan", type number},
+				        {"NoDaiHan", type number},
+				        {"EBIT", type number},
+				        {"LoiNhuanGop", type number},
+				        {"NoNganHan", type number},
+				        {"LoiNhuanGiuLai", type number},
+				        {"TongDoanhThu", type number},
+				        {"TongNoPhaiTra", type number},
+				        {"ChiPhiHoatDong", type number},
+				
+				        {"NhanNamTruoc", type text},
+				        {"PhaSanNamToi", Int64.Type},
+				        {"SoNamTruocPS", Int64.Type}
+				    }
+				),
+				    #"Added Custom" = Table.AddColumn(#"Change Type", "Liquidity_Ratio", each if [NoNganHan] <> 0
+				then [TaiSanNganHan] / [NoNganHan]
+				else null),
+				    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Leverage_Ratio", each if [TongTaiSan] <> 0
+				then [TongNoPhaiTra] / [TongTaiSan]
+				else null),
+				    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "ROA", each if [TongTaiSan] <> 0
+				then [LoiNhuanRong] / [TongTaiSan]
+				else null),
+				    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Retained_Earnings_Ratio", each if [TongTaiSan] <> 0
+				then [LoiNhuanGiuLai] / [TongTaiSan]
+				else null),
+				    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "CurrentAssets_Ratio", each if [TongTaiSan] <> 0
+				then [TaiSanNganHan] / [TongTaiSan]
+				else null),
+				    #"Added Custom5" = Table.AddColumn(#"Added Custom4", "Log_TotalAssets", each if [TongTaiSan] > 0
+				then Number.Log10([TongTaiSan])
+				else null),
+				    #"Added Custom6" = Table.AddColumn(#"Added Custom5", "MarketValue_Liabilities", each if [TongNoPhaiTra] > 0 and [VonHoaThiTruong] > 0
+				then Number.Log10([VonHoaThiTruong] / [TongNoPhaiTra])
+				else null),
+				    #"Added Custom7" = Table.AddColumn(#"Added Custom6", "Leverage_Group", each if [Leverage_Ratio] > 1
+				then "TL.TA > 1"
+				else "TL.TA ≤ 1"),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom7",{{"Liquidity_Ratio", type number}, {"Leverage_Ratio", type number}, {"ROA", type number}, {"Retained_Earnings_Ratio", type number}, {"CurrentAssets_Ratio", type number}, {"Log_TotalAssets", type number}, {"MarketValue_Liabilities", type number}, {"Leverage_Group", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

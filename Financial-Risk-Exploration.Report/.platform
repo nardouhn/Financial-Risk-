@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Financial-Risk-Exploration"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "cfc31298-8fa9-4a6f-b53f-7ab949a036d4"
+  }
+}
