@@ -1,2 +1,62 @@
 cultureInfo en-US
 
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "factbankruptcy.bankruptcy_events": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FactBankruptcy",
+			          "ConceptualProperty": "Bankruptcy Events"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "factbankruptcy.event_rate": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FactBankruptcy",
+			          "ConceptualProperty": "Event Rate"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tỷ lệ phá sản": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "factbankruptcy.event_rate_tooltip": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FactBankruptcy",
+			          "ConceptualProperty": "Event Rate Tooltip"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cách tính": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

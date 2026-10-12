@@ -19,10 +19,11 @@
               {
                 "textRuns": [
                   {
-                    "value": "DATASET OVERVIEW ",
+                    "value": "TỔNG QUAN DỮ LIỆU ",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontSize": "20pt"
+                      "fontSize": "20pt",
+                      "fontFamily": "Segoe UI"
                     }
                   }
                 ],

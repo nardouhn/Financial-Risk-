@@ -4,13 +4,13 @@ table FactBankruptcy
 	measure 'Total Records' =
 			
 			COUNTROWS(FactBankruptcy)
-		formatString: 0
+		formatString: #,0
 		lineageTag: 2b48b9e2-6106-4056-a9ef-577899bfa92a
 
 	measure 'Total Companies' =
 			
 			DISTINCTCOUNT(FactBankruptcy[MaCongTy])
-		formatString: 0
+		formatString: #,0
 		lineageTag: 03a1962e-fec0-4575-a1ba-2e93e69c16bb
 
 	measure 'Failed Records' =
@@ -38,9 +38,35 @@ table FactBankruptcy
 			    [Total Records],
 			    0
 			)
+		formatString: 0.00%;-0.00%;0.00%
 		lineageTag: 9abd76c7-2ff9-41d6-a5f1-e4beb8e8e243
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
+	measure 'Bankruptcy Events' =
+			
+			CALCULATE(
+			    COUNTROWS(FactBankruptcy),
+			    FactBankruptcy[PhaSanNamToi] = 1
+			)
+		formatString: #,0
+		lineageTag: 5d1c2f7a-8e34-4b6a-9f21-3c7e0a9b4d11
+
+	measure 'Failed Companies' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(FactBankruptcy[MaCongTy]),
+			    FactBankruptcy[TrangThaiPhaSan] = "failed"
+			)
+		formatString: #,0
+		lineageTag: 7a2e9b14-3c6d-4f80-a1b5-9e8d2c4f6a22
+
+	measure 'Event Rate' =
+			
+			DIVIDE(
+			    [Bankruptcy Events],
+			    [Total Records]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9c4b1d36-5e7f-4a92-b3c8-1f0a6e2d8b33
 
 	measure 'Min Year' =
 			
@@ -114,8 +140,8 @@ table FactBankruptcy
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Bankruptcy Rate TLTA <' =
-			1 =
+	measure 'Bankruptcy Rate TLTA <= 1' =
+			
 			DIVIDE(
 			    CALCULATE(
 			        COUNTROWS(FactBankruptcy),
@@ -128,7 +154,7 @@ table FactBankruptcy
 			    ),
 			    0
 			)
-		formatString: """TRUE"";""TRUE"";""FALSE"""
+		formatString: 0.00%;-0.00%;0.00%
 		lineageTag: b478764a-93e5-46c5-abe2-61905bedf4bd
 
 	measure 'Average Total Assets' =
@@ -144,6 +170,19 @@ table FactBankruptcy
 		lineageTag: 83616cdc-b46e-4380-aaec-82d41544848f
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Event Rate Tooltip' =
+			
+			FORMAT([Bankruptcy Events], "0") & " vụ phá sản / "
+			    & FORMAT([Total Records], "0") & " công ty báo cáo = "
+			    & FORMAT([Event Rate], "0.00%", "vi-VN")
+		lineageTag: 6b1f3d92-2c7e-4a58-b9d4-0e6a8c3f5b77
+
+	measure 'Event Rate Average' =
+			
+			CALCULATE([Event Rate], ALLSELECTED(FactBankruptcy[Nam]))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8d3c5e14-7a2b-4c69-9f80-1b4e6d2a7c55
 
 	column MaCongTy
 		dataType: string
@@ -458,7 +497,7 @@ table FactBankruptcy
 		mode: import
 		source =
 				let
-				    Source = Csv.Document(File.Contents("C:\Users\tuyet\OneDrive\Máy tính\trực quan hóa\american_bankruptcy_clean.csv"),[Delimiter=",", Columns=24, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Source = Csv.Document(File.Contents("C:\VS code\Visualize\Financial-Risk-\american_bankruptcy_clean.csv"),[Delimiter=",", Columns=24, Encoding=65001, QuoteStyle=QuoteStyle.None]),
 				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
 				    #"Change Type" = Table.TransformColumnTypes(
 				    #"Use First Row as Headers",

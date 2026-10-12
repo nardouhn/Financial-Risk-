@@ -19,10 +19,11 @@
               {
                 "textRuns": [
                   {
-                    "value": "General metrics & distributions of US corporate risk status (1999–2018)",
+                    "value": "Chỉ số chung và phân bố tình trạng rủi ro của doanh nghiệp Mỹ (1999–2018)",
                     "textStyle": {
                       "fontSize": "10pt",
-                      "color": "#64748b"
+                      "color": "#64748b",
+                      "fontFamily": "Segoe UI"
                     }
                   }
                 ]
