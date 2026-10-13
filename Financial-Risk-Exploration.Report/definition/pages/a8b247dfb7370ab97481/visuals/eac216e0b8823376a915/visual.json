@@ -1,0 +1,211 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "eac216e0b8823376a915",
+  "position": {
+    "x": 860,
+    "y": 110,
+    "z": 9003,
+    "height": 462.5,
+    "width": 1037.5,
+    "tabOrder": 9003
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TaiSanNganHan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TaiSanNganHan",
+              "nativeQueryRef": "TaiSanNganHan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "NoNganHan"
+                }
+              },
+              "queryRef": "FactBankruptcy.NoNganHan",
+              "nativeQueryRef": "NoNganHan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongNoPhaiTra"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongNoPhaiTra",
+              "nativeQueryRef": "TongNoPhaiTra"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongTaiSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongTaiSan",
+              "nativeQueryRef": "TongTaiSan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanRong"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanRong",
+              "nativeQueryRef": "LoiNhuanRong"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanGiuLai"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanGiuLai",
+              "nativeQueryRef": "LoiNhuanGiuLai"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "VonHoaThiTruong"
+                }
+              },
+              "queryRef": "FactBankruptcy.VonHoaThiTruong",
+              "nativeQueryRef": "VonHoaThiTruong"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'# ============================================================\n# HEATMAP 2 – Ma trận tương quan 7 tỷ số tài chính (Spearman)\n# ============================================================\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import LinearSegmentedColormap\n\nINK = ''#252525''\nCMAP_DIV = LinearSegmentedColormap.from_list(\n    ''gw_r'',\n    [''#525252'', ''#bdbdbd'', ''#ffffff'', ''#fb6a4a'', ''#99000d'']\n)\n\n# ---- Tính 7 tỷ số từ dataset (Python visual không nhận measure) ----\nd = dataset.copy()\nTA = d[''TongTaiSan'']\nd[''Liquidity_Ratio'']         = d[''TaiSanNganHan''] / d[''NoNganHan'']\nd[''Leverage_Ratio'']          = d[''TongNoPhaiTra''] / TA\nd[''ROA'']                     = d[''LoiNhuanRong''] / TA\nd[''Retained_Earnings_Ratio''] = d[''LoiNhuanGiuLai''] / TA\nd[''CurrentAssets_Ratio'']     = d[''TaiSanNganHan''] / TA\nd[''MarketValue_Liabilities''] = np.log10(d[''VonHoaThiTruong''] / d[''TongNoPhaiTra''])\nd[''Log_TotalAssets'']         = np.log10(TA)\n\nRATIO_COLS = [''Liquidity_Ratio'',''Leverage_Ratio'',''ROA'',''Retained_Earnings_Ratio'',\n              ''CurrentAssets_Ratio'',''MarketValue_Liabilities'',''Log_TotalAssets'']\nRATIO_LABELS = [''Thanh toán hiện hành (TSNH / Nợ NH)'',\n                ''Tổng nợ / Tổng TS'',\n                ''ROA (LN ròng / Tổng TS)'',\n                ''LN giữ lại / Tổng TS'',\n                ''TS ngắn hạn / Tổng TS'',\n                ''log10(Vốn hóa / Tổng nợ)'',\n                ''log10(Tổng tài sản)'']\n\n# ---- Spearman = Pearson trên rank ----\ncm = d[RATIO_COLS].rank().corr(method=''pearson'')\n\nfig, ax = plt.subplots(figsize=(9, 5.5))\nn = len(RATIO_COLS)\nmask = np.triu(np.ones_like(cm.values, dtype=bool))\ndata = np.ma.array(cm.values, mask=mask)\n\nim = ax.imshow(data, cmap=CMAP_DIV, vmin=-1, vmax=1, aspect=''auto'')\n\n# Ghi số trong ô\nfor i in range(n):\n    for j in range(i):\n        v = cm.values[i, j]\n        ax.text(j, i, f''{v:.2f}''.replace(''.'', '',''),\n                ha=''center'', va=''center'', fontsize=9,\n                color=''white'' if abs(v) > 0.6 else INK)\n\nax.set_xticks(range(n))\nax.set_xticklabels(RATIO_LABELS, rotation=40, ha=''right'', fontsize=8.5)\nax.set_yticks(range(n))\nax.set_yticklabels(RATIO_LABELS, fontsize=8.5)\nax.tick_params(length=0)\nfor s in ax.spines.values():\n    s.set_visible(False) \n# Colorbar\ncb = fig.colorbar(im, ax=ax, shrink=0.75, pad=0.03)\ncb.outline.set_visible(False)\ncb.set_label(''Hệ số tương quan'', fontsize=9)\ncb.ax.tick_params(labelsize=8)\n\nplt.tight_layout()\nplt.show()'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Hệ số tương quan bảy tỉ số'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

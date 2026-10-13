@@ -1,0 +1,169 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "8e0d6e4b61ea52f305c3",
+  "position": {
+    "x": 250,
+    "y": 590,
+    "z": 9004,
+    "height": 490,
+    "width": 1015,
+    "tabOrder": 9004
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongNoPhaiTra"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongNoPhaiTra",
+              "nativeQueryRef": "TongNoPhaiTra"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongTaiSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongTaiSan",
+              "nativeQueryRef": "TongTaiSan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "VonHoaThiTruong"
+                }
+              },
+              "queryRef": "FactBankruptcy.VonHoaThiTruong",
+              "nativeQueryRef": "VonHoaThiTruong"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TrangThaiPhaSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TrangThaiPhaSan",
+              "nativeQueryRef": "TrangThaiPhaSan"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'# The following code to create a dataframe and remove duplicated rows is always executed and acts as a preamble for your script: \n\n# dataset = pandas.DataFrame(TongNoPhaiTra, TongTaiSan, VonHoaThiTruong, TrangThaiPhaSan)\n# dataset = dataset.drop_duplicates()\n\n# Paste or type your script code here:\n# ============================================================\n# SCATTER – Đòn bẩy vs log10(Vốn hóa/Nợ), tô theo nhóm\n# ============================================================\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nRED      = ''#cb181d''\nGRAY     = ''#bdbdbd''\nGRAY_DK  = ''#737373''\n\nd = dataset.copy()\n\n# Tạo 2 tỷ số cần cho scatter\nd[''Leverage_Ratio''] = d[''TongNoPhaiTra''] / d[''TongTaiSan'']\nwith np.errstate(divide=''ignore'', invalid=''ignore''):\n    d[''MarketValue_Liabilities''] = np.log10(d[''VonHoaThiTruong''] / d[''TongNoPhaiTra''])\n\n# Nhóm: nếu có PhaSanNamToi thì dùng, không thì suy từ TrangThaiPhaSan\nif ''PhaSanNamToi'' in d.columns:\n    d[''Nhom''] = np.where(d[''PhaSanNamToi''] == 1, ''Năm trước phá sản'', ''Các năm còn lại'')\nelif ''TrangThaiPhaSan'' in d.columns:\n    d[''TrangThaiPhaSan''] = d[''TrangThaiPhaSan''].astype(str).str.lower()\n    d[''Nhom''] = np.where(d[''TrangThaiPhaSan''] == ''failed'',\n                         ''Năm trước phá sản'', ''Các năm còn lại'')\nelse:\n    d[''Nhom''] = ''Các năm còn lại''\n\n# Giới hạn như Hình 5.4 để không bị bẹp\nmask = d[''Leverage_Ratio''].between(0, 3) & d[''MarketValue_Liabilities''].between(-5, 3)\nsub = d.loc[mask].copy()\n\nfig, ax = plt.subplots(figsize=(11, 4.5))\n\nfor nhom, color, alpha, size in [(''Các năm còn lại'', GRAY, 0.25, 5),\n                                  (''Năm trước phá sản'', RED, 0.55, 9)]:\n    s = sub[sub[''Nhom''] == nhom]\n    if len(s):\n        ax.scatter(s[''Leverage_Ratio''], s[''MarketValue_Liabilities''],\n                   s=size, color=color, alpha=alpha, lw=0,\n                   label=nhom,\n                   zorder=3 if nhom == ''Năm trước phá sản'' else 1)\n\n# Đường xu hướng\nx_v = sub[''Leverage_Ratio''].values\ny_v = sub[''MarketValue_Liabilities''].values\nok = np.isfinite(x_v) & np.isfinite(y_v)\nif ok.sum() > 1:\n    k, b = np.polyfit(x_v[ok], y_v[ok], 1)\n    xs = np.linspace(0, 3, 100)\n    ax.plot(xs, k*xs + b, color=GRAY_DK, lw=1.8, zorder=2)\n\nax.set_xlim(0, 3)\nax.set_ylim(-5, 3)\nax.set_xlabel(''Tổng nợ / Tổng tài sản'')\nax.set_ylabel(''log10(Vốn hóa / Tổng nợ)'') \nax.grid(True, color=''#eeeeee'', lw=0.7)\nax.set_axisbelow(True)\nax.legend(loc=''upper right'', frameon=False)\n\nplt.tight_layout()\nplt.show()'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tỉ số đòn bẩy'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

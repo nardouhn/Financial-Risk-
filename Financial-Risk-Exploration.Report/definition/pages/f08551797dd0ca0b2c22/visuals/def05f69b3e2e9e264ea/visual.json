@@ -1,0 +1,365 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "def05f69b3e2e9e264ea",
+  "position": {
+    "x": 1052.5,
+    "y": 242.5,
+    "z": 9006,
+    "height": 520,
+    "width": 855,
+    "tabOrder": 9006
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TaiSanNganHan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TaiSanNganHan",
+              "nativeQueryRef": "TaiSanNganHan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "GiaVonHangBan"
+                }
+              },
+              "queryRef": "FactBankruptcy.GiaVonHangBan",
+              "nativeQueryRef": "GiaVonHangBan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "KhauHao"
+                }
+              },
+              "queryRef": "FactBankruptcy.KhauHao",
+              "nativeQueryRef": "KhauHao"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "EBITDA"
+                }
+              },
+              "queryRef": "FactBankruptcy.EBITDA",
+              "nativeQueryRef": "EBITDA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "HangTonKho"
+                }
+              },
+              "queryRef": "FactBankruptcy.HangTonKho",
+              "nativeQueryRef": "HangTonKho"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanRong"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanRong",
+              "nativeQueryRef": "LoiNhuanRong"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "PhaiThu"
+                }
+              },
+              "queryRef": "FactBankruptcy.PhaiThu",
+              "nativeQueryRef": "PhaiThu"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "VonHoaThiTruong"
+                }
+              },
+              "queryRef": "FactBankruptcy.VonHoaThiTruong",
+              "nativeQueryRef": "VonHoaThiTruong"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "DoanhThuThuan"
+                }
+              },
+              "queryRef": "FactBankruptcy.DoanhThuThuan",
+              "nativeQueryRef": "DoanhThuThuan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongTaiSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongTaiSan",
+              "nativeQueryRef": "TongTaiSan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "NoDaiHan"
+                }
+              },
+              "queryRef": "FactBankruptcy.NoDaiHan",
+              "nativeQueryRef": "NoDaiHan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "EBIT"
+                }
+              },
+              "queryRef": "FactBankruptcy.EBIT",
+              "nativeQueryRef": "EBIT"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanGop"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanGop",
+              "nativeQueryRef": "LoiNhuanGop"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "NoNganHan"
+                }
+              },
+              "queryRef": "FactBankruptcy.NoNganHan",
+              "nativeQueryRef": "NoNganHan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanGiuLai"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanGiuLai",
+              "nativeQueryRef": "LoiNhuanGiuLai"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongDoanhThu"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongDoanhThu",
+              "nativeQueryRef": "TongDoanhThu"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongNoPhaiTra"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongNoPhaiTra",
+              "nativeQueryRef": "TongNoPhaiTra"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "ChiPhiHoatDong"
+                }
+              },
+              "queryRef": "FactBankruptcy.ChiPhiHoatDong",
+              "nativeQueryRef": "ChiPhiHoatDong"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'# The following code to create a dataframe and remove duplicated rows is always executed and acts as a preamble for your script: \n\n# dataset = pandas.DataFrame(TaiSanNganHan, GiaVonHangBan, KhauHao, EBITDA, HangTonKho, LoiNhuanRong, PhaiThu, VonHoaThiTruong, DoanhThuThuan, TongTaiSan, NoDaiHan, EBIT, LoiNhuanGop, NoNganHan, LoiNhuanGiuLai, TongDoanhThu, TongNoPhaiTra, ChiPhiHoatDong)\n# dataset = dataset.drop_duplicates()\n\n# Paste or type your script code here:\n# ============================================================\n# Hinh 3.1 - Ty le dong am / bang 0 (do dam + xanh la dam)\n# ============================================================\nimport matplotlib.pyplot as plt\nimport numpy as np\nimport matplotlib.ticker as mtick\n\nCHECK_COLS = [\n    ''TaiSanNganHan'', ''GiaVonHangBan'', ''KhauHao'', ''EBITDA'',\n    ''HangTonKho'', ''LoiNhuanRong'', ''PhaiThu'', ''VonHoaThiTruong'',\n    ''TongTaiSan'', ''NoDaiHan'', ''EBIT'', ''LoiNhuanGop'',\n    ''NoNganHan'', ''LoiNhuanGiuLai'', ''TongDoanhThu'',\n    ''TongNoPhaiTra'', ''ChiPhiHoatDong'',\n]\nRAWLABEL = {\n    ''TaiSanNganHan'':   ''Tai san ngan han'',\n    ''GiaVonHangBan'':   ''Gia von hang ban'',\n    ''KhauHao'':         ''Khau hao'',\n    ''EBITDA'':          ''EBITDA'',\n    ''HangTonKho'':      ''Hang ton kho'',\n    ''LoiNhuanRong'':    ''Loi nhuan rong'',\n    ''PhaiThu'':         ''Phai thu'',\n    ''VonHoaThiTruong'': ''Von hoa thi truong'',\n    ''TongTaiSan'':      ''Tong tai san'',\n    ''NoDaiHan'':        ''No dai han'',\n    ''EBIT'':            ''EBIT'',\n    ''LoiNhuanGop'':     ''Loi nhuan gop'',\n    ''NoNganHan'':       ''No ngan han'',\n    ''LoiNhuanGiuLai'':  ''Loi nhuan giu lai'',\n    ''TongDoanhThu'':    ''Tong doanh thu'',\n    ''TongNoPhaiTra'':   ''Tong no phai tra'',\n    ''ChiPhiHoatDong'':  ''Chi phi hoat dong'',\n}\n\n# --- Mau dam ---\nRED_DARK   = ''#99000d''   # do dam   -> gia tri am\nGREEN_DARK = ''#1b5e20''   # xanh la dam -> gia tri bang 0\nINK        = ''#252525''\n\n# --- Ty le am / bang 0 ---\nneg  = (dataset[CHECK_COLS] < 0).mean()\nzero = (dataset[CHECK_COLS] == 0).mean()\n\nmask  = (neg + zero) > 0\norder = (neg + zero)[mask].sort_values().index\ny = np.arange(len(order))\n\n# --- Ve ---\nfig, ax = plt.subplots(figsize=(10, 6.5))\n\nax.barh(y + 0.2, neg[order],  height=0.38, color=RED_DARK,   label=''Gia tri am'')\nax.barh(y - 0.2, zero[order], height=0.38, color=GREEN_DARK, label=''Gia tri bang 0'')\n\nax.set_yticks(y)\nax.set_yticklabels([RAWLABEL[c] for c in order], fontsize=9.5, color=INK)\nax.tick_params(axis=''y'', length=0)\nax.spines[''left''].set_visible(False)\nax.spines[''top''].set_visible(False)\nax.spines[''right''].set_visible(False)\n\nax.xaxis.set_major_formatter(mtick.FuncFormatter(lambda v, _: f''{v*100:.0f}%''))\nax.xaxis.grid(True, color=''#eeeeee'', lw=0.8)\nax.set_axisbelow(True)\nax.set_xlabel(''Ty le so dong'', color=INK)\n\nax.legend(loc=''upper left'', bbox_to_anchor=(1.01, 1),\n          frameon=False, fontsize=10, labelspacing=1.0)\nplt.tight_layout()\nplt.show()'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tỷ lệ dòng có giá trị âm hoặc bằng không theo chỉ tiêu kế toán'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

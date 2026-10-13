@@ -145,6 +145,37 @@ table FactBankruptcy
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Tổng tài sản nhỏ hơn 10' =
+			
+			DIVIDE(
+			    COUNTROWS(FILTER(FactBankruptcy, FactBankruptcy[TongTaiSan] < 10)),
+			    COUNTROWS(FactBankruptcy)
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 707bcece-56c3-424b-9cbc-d79926b6cdf9
+
+	measure 'Số dòng bị loại' = 29
+		formatString: 0
+		lineageTag: 906d6e91-5c20-4cb2-8799-59f66845f19a
+
+	measure 'Vi phạm đồng nhất thức' = 8
+		formatString: 0
+		lineageTag: 870a6c09-500e-4d88-83d8-7ba4e4f703c3
+
+	measure 'Tỉ số có ngoại lai lớn nhất' = (10215+758)/78674
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a9b8201f-ed35-4af9-afda-03dca67b74d7
+
+	measure 'Hệ số tương quan cao nhất của biến thô' = 0.97
+		lineageTag: 1aa086ac-bb4d-4131-8052-09216c14da24
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Hệ số tương quan cao nhất của 7 tỉ số' = 0.71
+		lineageTag: dbc25552-7233-4bc9-94d6-8b9ad509d8b3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column MaCongTy
 		dataType: string
 		lineageTag: fe3ee3f4-4123-4fd0-989a-6b68e8082cdf
@@ -458,7 +489,7 @@ table FactBankruptcy
 		mode: import
 		source =
 				let
-				    Source = Csv.Document(File.Contents("C:\Users\tuyet\OneDrive\Máy tính\trực quan hóa\american_bankruptcy_clean.csv"),[Delimiter=",", Columns=24, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Source = Csv.Document(File.Contents("C:\Users\admin\Downloads\american_bankruptcy_clean.csv"),[Delimiter=",", Columns=24, Encoding=65001, QuoteStyle=QuoteStyle.None]),
 				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
 				    #"Change Type" = Table.TransformColumnTypes(
 				    #"Use First Row as Headers",
@@ -515,9 +546,16 @@ table FactBankruptcy
 				    #"Added Custom7" = Table.AddColumn(#"Added Custom6", "Leverage_Group", each if [Leverage_Ratio] > 1
 				then "TL.TA > 1"
 				else "TL.TA ≤ 1"),
-				    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom7",{{"Liquidity_Ratio", type number}, {"Leverage_Ratio", type number}, {"ROA", type number}, {"Retained_Earnings_Ratio", type number}, {"CurrentAssets_Ratio", type number}, {"Log_TotalAssets", type number}, {"MarketValue_Liabilities", type number}, {"Leverage_Group", type text}})
+				    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom7",{{"Liquidity_Ratio", type number}, {"Leverage_Ratio", type number}, {"ROA", type number}, {"Retained_Earnings_Ratio", type number}, {"CurrentAssets_Ratio", type number}, {"Log_TotalAssets", type number}, {"MarketValue_Liabilities", type number}, {"Leverage_Group", type text}}),
+				    #"Added Custom8" = Table.AddColumn(#"Changed Type", "vipham", each if [TaiSanNganHan] = null then 1
+				 else if [TaiSanNganHan] < 0 then 1
+				 else if [TaiSanNganHan] > [TongTaiSan] then 1
+				 else if [HangTonKho] > [TaiSanNganHan] then 1
+				 else 0),
+				    #"Filtered Rows" = Table.SelectRows(#"Added Custom8", each true),
+				    #"Removed Columns" = Table.RemoveColumns(#"Filtered Rows",{"vipham"})
 				in
-				    #"Changed Type"
+				    #"Removed Columns"
 
 	annotation PBI_ResultType = Table
 

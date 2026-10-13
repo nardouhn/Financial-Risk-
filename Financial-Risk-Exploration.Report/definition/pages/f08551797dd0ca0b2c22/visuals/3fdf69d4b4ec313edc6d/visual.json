@@ -1,0 +1,218 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "3fdf69d4b4ec313edc6d",
+  "position": {
+    "x": 260,
+    "y": 242.5,
+    "z": 9005,
+    "height": 520,
+    "width": 777.5,
+    "tabOrder": 9005
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Liquidity_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.Liquidity_Ratio",
+              "nativeQueryRef": "Liquidity_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Leverage_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.Leverage_Ratio",
+              "nativeQueryRef": "Leverage_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "ROA"
+                }
+              },
+              "queryRef": "FactBankruptcy.ROA",
+              "nativeQueryRef": "ROA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Retained_Earnings_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.Retained_Earnings_Ratio",
+              "nativeQueryRef": "Retained_Earnings_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "CurrentAssets_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.CurrentAssets_Ratio",
+              "nativeQueryRef": "CurrentAssets_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "MarketValue_Liabilities"
+                }
+              },
+              "queryRef": "FactBankruptcy.MarketValue_Liabilities",
+              "nativeQueryRef": "MarketValue_Liabilities"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Log_TotalAssets"
+                }
+              },
+              "queryRef": "FactBankruptcy.Log_TotalAssets",
+              "nativeQueryRef": "Log_TotalAssets"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'# The following code to create a dataframe and remove duplicated rows is always executed and acts as a preamble for your script: \n\n# dataset = pandas.DataFrame(Liquidity_Ratio, Leverage_Ratio, ROA, Retained_Earnings_Ratio, CurrentAssets_Ratio, MarketValue_Liabilities, Log_TotalAssets)\n# dataset = dataset.drop_duplicates()\n\n# Paste or type your script code here:\n# ============================================================\n# Hinh 5.1 - Boxplot ngoai lai 7 ty so (tong do dam)\n# ============================================================\nimport matplotlib.pyplot as plt\nimport numpy as np\nimport textwrap\n\nRATIOS = [\n    ''Liquidity_Ratio'', ''Leverage_Ratio'', ''ROA'',\n    ''Retained_Earnings_Ratio'', ''CurrentAssets_Ratio'',\n    ''MarketValue_Liabilities'', ''Log_TotalAssets''\n]\nLABEL = {\n    ''Liquidity_Ratio'':         ''Thanh toan hien hanh (TSNH / No NH)'',\n    ''Leverage_Ratio'':          ''Tong no / Tong TS'',\n    ''ROA'':                     ''ROA (LN rong / Tong TS)'',\n    ''Retained_Earnings_Ratio'': ''LN giu lai / Tong TS'',\n    ''CurrentAssets_Ratio'':     ''TS ngan han / Tong TS'',\n    ''MarketValue_Liabilities'': ''log10(Von hoa / Tong no)'',\n    ''Log_TotalAssets'':         ''log10(Tong tai san)'',\n}\nHEAVY = [''Liquidity_Ratio'', ''Leverage_Ratio'', ''ROA'', ''Retained_Earnings_Ratio'']\n\n# --- Bang mau do dam ---\nRED_BOX    = ''#cb181d''   # nen hop\nRED_MEDIAN = ''#67000d''   # vach trung vi (do dam nhat)\nRED_EDGE   = ''#99000d''   # vien hop / rau\nRED_FLIER  = ''#99000d''   # cham ngoai lai\nINK        = ''#252525''\n\ndef wrap(t, w=22):\n    return ''\\n''.join(textwrap.wrap(t, w))\n\nfig, axes = plt.subplots(1, 7, figsize=(14, 5.5))\nfor ax, c in zip(axes, RATIOS):\n    s = dataset[c].dropna()\n    if len(s) == 0:\n        ax.set_visible(False)\n        continue\n    ax.boxplot(\n        s, widths=0.55, whis=1.5, patch_artist=True,\n        flierprops=dict(marker=''o'', markersize=2.5,\n                        markerfacecolor=RED_FLIER, markeredgecolor=''none'',\n                        alpha=0.4),\n        boxprops=dict(facecolor=RED_BOX, edgecolor=RED_EDGE, lw=1.0),\n        medianprops=dict(color=RED_MEDIAN, lw=2.2),\n        whiskerprops=dict(color=RED_EDGE, lw=1.0),\n        capprops=dict(color=RED_EDGE, lw=1.0),\n    )\n    if c in HEAVY:\n        ax.set_yscale(''symlog'', linthresh=1)\n    ax.set_xticks([])\n    ax.set_title(wrap(LABEL[c]) + (''\\n(symlog)'' if c in HEAVY else ''\\n''),\n                 fontsize=9, color=INK)\n    ax.spines[''bottom''].set_visible(False)\n    ax.spines[''top''].set_visible(False)\n    ax.spines[''right''].set_visible(False)\n    ax.yaxis.grid(True, color=''#eeeeee'', lw=0.8)\n    ax.set_axisbelow(True)\n    ax.tick_params(axis=''y'', labelsize=8, length=0, colors=RED_EDGE)\nplt.tight_layout()\nplt.show()'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Boxplot thể hiện ngoại lai của 7 tỉ số'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

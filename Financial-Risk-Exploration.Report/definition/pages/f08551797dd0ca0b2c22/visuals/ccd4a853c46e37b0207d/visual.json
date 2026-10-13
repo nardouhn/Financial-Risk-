@@ -1,0 +1,467 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "ccd4a853c46e37b0207d",
+  "position": {
+    "x": 260,
+    "y": 777.5,
+    "z": 9007,
+    "height": 302.5,
+    "width": 1647.5,
+    "tabOrder": 9007
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Tỷ số"
+                }
+              },
+              "queryRef": "Bang_NgoaiLai.Tỷ số",
+              "nativeQueryRef": "Tỷ số1"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Ngưỡng dưới"
+                }
+              },
+              "queryRef": "Sum(Bang_NgoaiLai.Ngưỡng dưới)",
+              "nativeQueryRef": "Ngưỡng dưới"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Ngưỡng trên"
+                }
+              },
+              "queryRef": "Sum(Bang_NgoaiLai.Ngưỡng trên)",
+              "nativeQueryRef": "Ngưỡng trên"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Ngoại lai dưới"
+                }
+              },
+              "queryRef": "Sum(Bang_NgoaiLai.Ngoại lai dưới)",
+              "nativeQueryRef": "Ngoại lai dưới"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Ngoại lai trên"
+                }
+              },
+              "queryRef": "Sum(Bang_NgoaiLai.Ngoại lai trên)",
+              "nativeQueryRef": "Ngoại lai trên"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Tỷ lệ ngoại lai"
+                }
+              },
+              "queryRef": "Sum(Bang_NgoaiLai.Tỷ lệ ngoại lai)",
+              "nativeQueryRef": "Tỷ lệ ngoại lai"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Min"
+                }
+              },
+              "queryRef": "Sum(Bang_NgoaiLai.Min)",
+              "nativeQueryRef": "Min"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bang_NgoaiLai"
+                    }
+                  },
+                  "Property": "Max"
+                }
+              },
+              "queryRef": "Sum(Bang_NgoaiLai.Max)",
+              "nativeQueryRef": "Max"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Bang_NgoaiLai"
+                  }
+                },
+                "Property": "Tỷ số"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "grid": [
+        {
+          "properties": {
+            "textSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVerticalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 1,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "gridVerticalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "outlineStyle": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "outlineWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "2D"
+                }
+              }
+            },
+            "imageHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "60D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Semibold'', wf_segoe-ui_semibold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Auto'"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnFormatting": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 1,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Bang_NgoaiLai.Tỷ số"
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Semibold'', wf_segoe-ui_semibold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "390.7988325151644D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Bang_NgoaiLai.Tỷ số"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "171.99999190821956D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Bang_NgoaiLai.Ngưỡng dưới)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "164.50002309094748D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Bang_NgoaiLai.Ngưỡng trên)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "169.49999366537622D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Bang_NgoaiLai.Ngoại lai dưới)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "166.99999291969212D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Bang_NgoaiLai.Ngoại lai trên)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "171.49998772322644D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Bang_NgoaiLai.Tỷ lệ ngoại lai)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "165D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Bang_NgoaiLai.Min)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "188.99994516375546D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Bang_NgoaiLai.Max)"
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

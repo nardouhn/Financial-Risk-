@@ -1,0 +1,183 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "7ce1bac3ba3882a3114d",
+  "position": {
+    "x": 1283.3333333333335,
+    "y": 590,
+    "z": 9002,
+    "height": 490,
+    "width": 614,
+    "tabOrder": 9002
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongTaiSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongTaiSan",
+              "nativeQueryRef": "TongTaiSan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongDoanhThu"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongDoanhThu",
+              "nativeQueryRef": "TongDoanhThu"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongNoPhaiTra"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongNoPhaiTra",
+              "nativeQueryRef": "TongNoPhaiTra"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "EBITDA"
+                }
+              },
+              "queryRef": "FactBankruptcy.EBITDA",
+              "nativeQueryRef": "EBITDA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanRong"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanRong",
+              "nativeQueryRef": "LoiNhuanRong"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'# The following code to create a dataframe and remove duplicated rows is always executed and acts as a preamble for your script: \n\n# dataset = pandas.DataFrame(TongTaiSan, TongDoanhThu, TongNoPhaiTra, EBITDA, LoiNhuanRong)\n# dataset = dataset.drop_duplicates()\n\n# Paste or type your script code here:\n# ============================================================\n# HEATMAP 1 – Ma trận tương quan 5 chỉ tiêu thô (Pearson)\n# ============================================================\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import LinearSegmentedColormap\n\nINK = ''#252525''\nCMAP_DIV = LinearSegmentedColormap.from_list(\n    ''gw_r'',\n    [''#525252'', ''#bdbdbd'', ''#ffffff'', ''#fb6a4a'', ''#99000d'']\n)\n\nRAW_COLS = [''TongTaiSan'',''TongDoanhThu'',''TongNoPhaiTra'',''EBITDA'',''LoiNhuanRong'']\nRAW_LABELS = [''Tổng tài sản'',''Tổng doanh thu'',''Tổng nợ phải trả'',''EBITDA'',''Lợi nhuận ròng'']\n\ncm = dataset[RAW_COLS].corr(method=''pearson'')\n\nfig, ax = plt.subplots(figsize=(7, 5.5))\nn = len(RAW_COLS)\nmask = np.triu(np.ones_like(cm.values, dtype=bool))\ndata = np.ma.array(cm.values, mask=mask)\n\nim = ax.imshow(data, cmap=CMAP_DIV, vmin=-1, vmax=1, aspect=''auto'')\n\n# Ghi số trong ô\nfor i in range(n):\n    for j in range(i):\n        v = cm.values[i, j]\n        ax.text(j, i, f''{v:.2f}''.replace(''.'', '',''),\n                ha=''center'', va=''center'', fontsize=10,\n                color=''white'' if abs(v) > 0.6 else INK)\n\nax.set_xticks(range(n))\nax.set_xticklabels(RAW_LABELS, rotation=40, ha=''right'', fontsize=9)\nax.set_yticks(range(n))\nax.set_yticklabels(RAW_LABELS, fontsize=9)\nax.tick_params(length=0)\nfor s in ax.spines.values():\n    s.set_visible(False)\n# Colorbar\ncb = fig.colorbar(im, ax=ax, shrink=0.75, pad=0.03)\ncb.outline.set_visible(False)\ncb.set_label(''Hệ số tương quan'', fontsize=9)\ncb.ax.tick_params(labelsize=8)\n\nplt.tight_layout()\nplt.show()'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Hệ số tương quan chỉ số thô'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
