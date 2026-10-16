@@ -1,0 +1,235 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "7ce1bac3ba3882a3114d",
+  "position": {
+    "x": 1159.4830241746467,
+    "y": 592.47036764213487,
+    "z": 11000,
+    "height": 465,
+    "width": 715,
+    "tabOrder": 11000
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongTaiSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongTaiSan",
+              "nativeQueryRef": "TongTaiSan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongDoanhThu"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongDoanhThu",
+              "nativeQueryRef": "TongDoanhThu"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongNoPhaiTra"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongNoPhaiTra",
+              "nativeQueryRef": "TongNoPhaiTra"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "EBITDA"
+                }
+              },
+              "queryRef": "FactBankruptcy.EBITDA",
+              "nativeQueryRef": "EBITDA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanRong"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanRong",
+              "nativeQueryRef": "LoiNhuanRong"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'\n# ============================================================\n# HEATMAP 1 – PEARSON CORRELATION\n# COMPACT LAYOUT | DARK TEAL GRADIENT\n# ============================================================\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import LinearSegmentedColormap\n\n# ------------------------------------------------------------\n# 1. COLORS\n# ------------------------------------------------------------\nINK = ''#173F3D''\nBG = ''#F4F8F7''\n\nCMAP_TEAL = LinearSegmentedColormap.from_list(\n    ''teal_gradient'',\n    [''#B2E4DC'', ''#55BDB0'', ''#21998D'', ''#0F766E'', ''#07534F'']\n)\n\nRAW_COLS = [\n    ''TongTaiSan'',\n    ''TongDoanhThu'',\n    ''TongNoPhaiTra'',\n    ''EBITDA'',\n    ''LoiNhuanRong''\n]\n\nRAW_LABELS = [\n    ''Tổng tài sản'',\n    ''Tổng doanh thu'',\n    ''Tổng nợ phải trả'',\n    ''EBITDA'',\n    ''Lợi nhuận ròng''\n]\n\nX_LABELS = [\n    ''Tài sản'',\n    ''Doanh thu'',\n    ''Nợ phải trả'',\n    ''EBITDA'',\n    ''LN ròng''\n]\n\n# ------------------------------------------------------------\n# 2. CALCULATE PEARSON CORRELATION\n# ------------------------------------------------------------\nmissing_cols = [c for c in RAW_COLS if c not in dataset.columns]\n\nif missing_cols:\n    raise ValueError(f''Thiếu các cột: {missing_cols}'')\n\ncm = dataset[RAW_COLS].corr(method=''pearson'')\nn = len(RAW_COLS)\n\nmask = np.triu(np.ones_like(cm.values, dtype=bool))\ndata = np.ma.array(cm.values, mask=mask)\n\n# ------------------------------------------------------------\n# 3. FIGURE – REDUCE OUTER MARGINS\n# ------------------------------------------------------------\nfig = plt.figure(figsize=(10, 6), facecolor=BG)\n\n# Heatmap: giảm lề trái, tăng diện tích hiển thị\nax = fig.add_axes([0.15, 0.13, 0.59, 0.75])\nax.set_facecolor(BG)\n\nim = ax.imshow(\n    data,\n    cmap=CMAP_TEAL,\n    vmin=-1,\n    vmax=1,\n    aspect=''equal'',\n    interpolation=''nearest''\n)\n\n# ------------------------------------------------------------\n# 4. CORRELATION VALUES\n# ------------------------------------------------------------\nfor i in range(n):\n    for j in range(i):\n        v = cm.values[i, j]\n\n        rgba = CMAP_TEAL((v + 1) / 2)\n        luminance = (\n            0.299 * rgba[0]\n            + 0.587 * rgba[1]\n            + 0.114 * rgba[2]\n        )\n\n        ax.text(\n            j, i,\n            f''{v:.2f}''.replace(''.'', '',''),\n            ha=''center'',\n            va=''center'',\n            fontsize=12,\n            fontweight=''bold'',\n            color=''white'' if luminance < 0.58 else INK\n        )\n\n# ------------------------------------------------------------\n# 5. AXIS LABELS – CENTERED ON EACH CELL\n# ------------------------------------------------------------\nax.set_xticks(np.arange(n))\nax.set_xticklabels(\n    X_LABELS,\n    fontsize=10,\n    color=INK,\n    rotation=0,\n    ha=''center''\n)\n\nax.set_yticks(np.arange(n))\nax.set_yticklabels(\n    RAW_LABELS,\n    fontsize=10,\n    color=INK,\n    rotation=0,\n    ha=''right''\n)\n\nax.set_xlim(-0.5, n - 0.5)\nax.set_ylim(n - 0.5, -0.5)\n\nax.tick_params(axis=''x'', length=0, pad=6)\nax.tick_params(axis=''y'', length=0, pad=6)\n\nfor spine in ax.spines.values():\n    spine.set_visible(False)\n\n# ------------------------------------------------------------\n# 6. COLORBAR – CLOSER TO THE HEATMAP\n# ------------------------------------------------------------\ncax = fig.add_axes([0.83, 0.27, 0.018, 0.52])\n\ncb = fig.colorbar(im, cax=cax)\ncb.outline.set_visible(False)\n\ncb.set_label(\n    ''Hệ số tương quan'',\n    fontsize=9,\n    color=INK,\n    labelpad=5\n)\n\ncb.ax.tick_params(\n    labelsize=9,\n    colors=INK,\n    length=2,\n    pad=2\n)\n\n# ------------------------------------------------------------\n# 7. MAIN TITLE – FONT SIZE 20\n# ------------------------------------------------------------\nfig.suptitle(\n    ''Hệ số tương quan chỉ số thô'',\n    fontsize=20,\n    fontweight=''bold'',\n    color=INK,\n    y=0.97\n)\n\n# ------------------------------------------------------------\n# 8. RENDER\n# ------------------------------------------------------------\nplt.show()\n'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Hệ số tương quan chỉ số thô'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

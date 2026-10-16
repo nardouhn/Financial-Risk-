@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "1ae50532892ae156ab22",
-  "displayName": "05-Company Size",
+  "displayName": "Quy mô công ty",
   "displayOption": "FitToPage",
   "height": 1080,
   "width": 1920,
@@ -23,5 +23,12 @@
         }
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "f601fbc9671646709637",
+      "target": "c5e21ea2ea2d11b8b27b",
+      "type": "NoFilter"
+    }
+  ]
 }

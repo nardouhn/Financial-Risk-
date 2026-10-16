@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "0db12dbc7c6c3438cb4d",
   "position": {
     "x": 322.5,
@@ -19,10 +19,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "General metrics & distributions of US corporate risk status (1999–2018)",
+                    "value": "Các tỷ số tài chính liên hệ với nhau và với phá sản ra sao ?",
                     "textStyle": {
-                      "fontSize": "10pt",
-                      "color": "#64748b"
+                      "fontStyle": "italic",
+                      "fontSize": "11pt"
                     }
                   }
                 ]

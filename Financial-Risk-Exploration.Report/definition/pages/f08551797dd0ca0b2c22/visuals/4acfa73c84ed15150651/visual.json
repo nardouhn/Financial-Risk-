@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "4acfa73c84ed15150651",
   "position": {
     "x": 322.5,
@@ -19,11 +19,13 @@
               {
                 "textRuns": [
                   {
-                    "value": "General metrics & distributions of US corporate risk status (1999–2018)",
+                    "value": "Hình dạng phân phối và các giá trị bất thường của tỷ số tài chính",
                     "textStyle": {
-                      "fontSize": "10pt",
-                      "color": "#64748b"
+                      "fontStyle": "italic"
                     }
+                  },
+                  {
+                    "value": " "
                   }
                 ]
               }

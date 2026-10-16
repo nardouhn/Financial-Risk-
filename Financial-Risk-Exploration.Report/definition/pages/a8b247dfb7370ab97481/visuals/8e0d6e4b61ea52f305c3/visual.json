@@ -1,0 +1,176 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "8e0d6e4b61ea52f305c3",
+  "position": {
+    "x": 277.72048483225069,
+    "y": 286.97783432665904,
+    "z": 13000,
+    "height": 465.1818120940199,
+    "width": 842.41880399116042,
+    "tabOrder": 13000
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongNoPhaiTra"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongNoPhaiTra",
+              "nativeQueryRef": "TongNoPhaiTra"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongTaiSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongTaiSan",
+              "nativeQueryRef": "TongTaiSan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "VonHoaThiTruong"
+                }
+              },
+              "queryRef": "FactBankruptcy.VonHoaThiTruong",
+              "nativeQueryRef": "VonHoaThiTruong"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TrangThaiPhaSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TrangThaiPhaSan",
+              "nativeQueryRef": "TrangThaiPhaSan"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'\n# ============================================================\n# SCATTER – TỶ SỐ ĐÒN BẨY\n# TEAL + DARK PINK | TITLE SIZE 20 | COMPACT LAYOUT\n# ============================================================\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\n# ------------------------------------------------------------\n# 1. COLORS\n# ------------------------------------------------------------\nTEAL = ''#0F766E''\nPINK = ''#B42345''\nINK = ''#173F3D''\nBG = ''#F4F8F7''\nGRID = ''#DCE8E5''\n\n# ------------------------------------------------------------\n# 2. PREPARE DATA\n# ------------------------------------------------------------\nd = dataset.copy()\n\nnumeric_cols = [\n    ''TongNoPhaiTra'',\n    ''TongTaiSan'',\n    ''VonHoaThiTruong''\n]\n\nmissing_cols = [c for c in numeric_cols if c not in d.columns]\n\nif missing_cols:\n    raise ValueError(f''Thiếu các cột: {missing_cols}'')\n\nfor col in numeric_cols:\n    d[col] = pd.to_numeric(d[col], errors=''coerce'')\n\n# Tỷ số đòn bẩy = Tổng nợ / Tổng tài sản\nd[''Leverage_Ratio''] = (\n    d[''TongNoPhaiTra'']\n    / d[''TongTaiSan''].replace(0, np.nan)\n)\n\n# log10(Vốn hóa thị trường / Tổng nợ)\nwith np.errstate(divide=''ignore'', invalid=''ignore''):\n    ratio = (\n        d[''VonHoaThiTruong'']\n        / d[''TongNoPhaiTra''].replace(0, np.nan)\n    )\n\n    d[''MarketValue_Liabilities''] = np.where(\n        ratio > 0,\n        np.log10(ratio),\n        np.nan\n    )\n\n# ------------------------------------------------------------\n# 3. CLASSIFY COMPANIES\n# ------------------------------------------------------------\nif ''PhaSanNamToi'' in d.columns:\n\n    bankruptcy_flag = pd.to_numeric(\n        d[''PhaSanNamToi''],\n        errors=''coerce''\n    )\n\n    d[''Nhom''] = np.where(\n        bankruptcy_flag == 1,\n        ''Năm trước phá sản'',\n        ''Các năm còn lại''\n    )\n\nelif ''TrangThaiPhaSan'' in d.columns:\n\n    status = (\n        d[''TrangThaiPhaSan'']\n        .astype(str)\n        .str.strip()\n        .str.lower()\n    )\n\n    d[''Nhom''] = np.where(\n        status == ''failed'',\n        ''Năm trước phá sản'',\n        ''Các năm còn lại''\n    )\n\nelse:\n    d[''Nhom''] = ''Các năm còn lại''\n\n# ------------------------------------------------------------\n# 4. FILTER DISPLAY RANGE\n# ------------------------------------------------------------\nvalid_mask = (\n    d[''Leverage_Ratio''].between(0, 3)\n    & d[''MarketValue_Liabilities''].between(-5, 3)\n    & np.isfinite(d[''Leverage_Ratio''])\n    & np.isfinite(d[''MarketValue_Liabilities''])\n)\n\nsub = d.loc[valid_mask].copy()\n\n# ------------------------------------------------------------\n# 5. FIGURE – COMPACT LAYOUT\n# ------------------------------------------------------------\nfig, ax = plt.subplots(\n    figsize=(10, 6),\n    dpi=150,\n    facecolor=BG\n)\n\nax.set_facecolor(BG)\n\n# ------------------------------------------------------------\n# 6. PLOT OTHER COMPANIES\n# ------------------------------------------------------------\ns_normal = sub[sub[''Nhom''] == ''Các năm còn lại'']\n\nif not s_normal.empty:\n    ax.scatter(\n        s_normal[''Leverage_Ratio''],\n        s_normal[''MarketValue_Liabilities''],\n        s=15,\n        color=TEAL,\n        alpha=0.38,\n        linewidths=0,\n        label=''Các năm còn lại'',\n        zorder=2,\n        rasterized=True\n    )\n\n# ------------------------------------------------------------\n# 7. PLOT PRE-BANKRUPTCY COMPANIES\n# ------------------------------------------------------------\ns_failed = sub[sub[''Nhom''] == ''Năm trước phá sản'']\n\nif not s_failed.empty:\n    ax.scatter(\n        s_failed[''Leverage_Ratio''],\n        s_failed[''MarketValue_Liabilities''],\n        s=22,\n        color=PINK,\n        alpha=0.78,\n        linewidths=0,\n        label=''Năm trước phá sản'',\n        zorder=3,\n        rasterized=True\n    )\n\n# ------------------------------------------------------------\n# 8. LINEAR TREND\n# ------------------------------------------------------------\nx_v = sub[''Leverage_Ratio''].to_numpy(dtype=float)\ny_v = sub[''MarketValue_Liabilities''].to_numpy(dtype=float)\n\nok = np.isfinite(x_v) & np.isfinite(y_v)\n\nif ok.sum() > 1 and np.unique(x_v[ok]).size > 1:\n\n    k, b = np.polyfit(x_v[ok], y_v[ok], 1)\n    xs = np.linspace(0, 3, 200)\n\n    ax.plot(\n        xs,\n        k * xs + b,\n        color=INK,\n        linewidth=2,\n        alpha=0.85,\n        linestyle=''--'',\n        label=''Đường xu hướng'',\n        zorder=4\n    )\n\n# ------------------------------------------------------------\n# 9. AXES\n# ------------------------------------------------------------\nax.set_xlim(0, 3)\nax.set_ylim(-5, 3)\n\nax.set_xlabel(\n    ''Tổng nợ / Tổng tài sản'',\n    fontsize=12,\n    fontweight=''bold'',\n    color=INK,\n    labelpad=4\n)\n\nax.set_ylabel(\n    ''log10(Vốn hóa / Tổng nợ)'',\n    fontsize=12,\n    fontweight=''bold'',\n    color=INK,\n    labelpad=5\n)\n\nax.tick_params(\n    axis=''both'',\n    which=''major'',\n    labelsize=10,\n    colors=INK,\n    length=3,\n    width=0.8,\n    pad=2\n)\n\n# ------------------------------------------------------------\n# 10. GRID AND SPINES\n# ------------------------------------------------------------\nax.grid(\n    True,\n    color=GRID,\n    linewidth=0.7,\n    alpha=0.9\n)\n\nax.set_axisbelow(True)\n\nax.spines[''top''].set_visible(False)\nax.spines[''right''].set_visible(False)\n\nax.spines[''left''].set_color(''#B7CBC6'')\nax.spines[''bottom''].set_color(''#B7CBC6'')\n\nax.spines[''left''].set_linewidth(0.8)\nax.spines[''bottom''].set_linewidth(0.8)\n\n\n# ------------------------------------------------------------\n# 11. LEGEND – LỚN, DỄ ĐỌC\n# ------------------------------------------------------------\nax.legend(\n    loc=''upper right'',\n    frameon=True,\n    facecolor=''white'',\n    edgecolor=''#D5E2DE'',\n    framealpha=0.96,\n    fontsize=12,\n    labelcolor=INK,\n    markerscale=1.8,\n    handletextpad=0.8,\n    borderaxespad=0.7,\n    labelspacing=0.8,\n    borderpad=0.8,\n    handlelength=1.5\n)\n\n\n# ------------------------------------------------------------\n# 12. TITLE – FONT SIZE 20\n# ------------------------------------------------------------\nfig.suptitle(\n    ''Tỷ số đòn bẩy'',\n    fontsize=20,\n    fontweight=''bold'',\n    color=INK,\n    y=0.97\n)\n\n# ------------------------------------------------------------\n# 13. REDUCE OUTER PADDING\n# ------------------------------------------------------------\nfig.subplots_adjust(\n    left=0.10,\n    right=0.985,\n    top=0.86,\n    bottom=0.12\n)\n\n# ------------------------------------------------------------\n# 14. RENDER\n# ------------------------------------------------------------\nplt.show()\n'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tỉ số đòn bẩy'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

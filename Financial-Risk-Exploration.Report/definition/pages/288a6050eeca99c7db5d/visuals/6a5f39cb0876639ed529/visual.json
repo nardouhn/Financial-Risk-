@@ -1,9 +1,9 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "6a5f39cb0876639ed529",
   "position": {
     "x": 0,
-    "y": 540,
+    "y": 577.5,
     "z": 7000,
     "height": 326,
     "width": 260,
@@ -138,8 +138,8 @@
                 "color": {
                   "expr": {
                     "ThemeDataColor": {
-                      "ColorId": 4,
-                      "Percent": 0
+                      "ColorId": 2,
+                      "Percent": -0.5
                     }
                   }
                 }

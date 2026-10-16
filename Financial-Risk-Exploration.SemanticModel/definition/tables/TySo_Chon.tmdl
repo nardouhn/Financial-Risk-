@@ -1,0 +1,63 @@
+table TySo_Chon
+	lineageTag: e75b95c3-3152-4990-96db-a1d2bf247ef9
+
+	column TySo
+		lineageTag: c8bbde2d-49f9-4c38-af29-e05600610566
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [TySo]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ten
+		lineageTag: f44be9db-00b3-464f-ac88-dbedf0852333
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ten]
+		sortByColumn: Stt
+
+		annotation SummarizationSetBy = Automatic
+
+	column XacSuatUuThe
+		lineageTag: 693e3543-97c0-4108-953f-12874ceab809
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [XacSuatUuThe]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Stt
+		formatString: 0
+		lineageTag: fa82252f-4653-4254-8b48-734900074e84
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Stt]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TySo_Chon = calculated
+		mode: import
+		source = ```
+				
+				DATATABLE(
+				    "TySo", STRING,
+				    "Ten", STRING,
+				    "XacSuatUuThe", DOUBLE,
+				    "Stt", INTEGER,
+				    {
+				        {"MarketValue_Liabilities", "Vốn hóa / Nợ", 0.819, 1},
+				        {"Leverage_Ratio", "Nợ / Tổng TS", 0.775, 2},
+				        {"ROA", "ROA", 0.747, 3},
+				        {"Liquidity_Ratio", "Thanh toán hiện hành", 0.727, 4},
+				        {"Retained_Earnings_Ratio", "LN giữ lại / Tổng TS", 0.697, 5},
+				        {"CurrentAssets_Ratio", "TS ngắn hạn / Tổng TS", 0.567, 6},
+				        {"Log_TotalAssets", "Log tổng tài sản", 0.555, 7}
+				    }
+				)
+				
+				```
+
+	annotation PBI_Id = e4fc920bd8274c81ada5b7b04a49c4c0
+

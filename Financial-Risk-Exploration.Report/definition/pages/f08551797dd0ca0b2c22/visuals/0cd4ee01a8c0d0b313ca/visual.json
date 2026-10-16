@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "0cd4ee01a8c0d0b313ca",
   "position": {
     "x": 260,
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "DISTRIBUTION & OUTLIERS ",
+                    "value": "PHÂN PHỐI & NGOẠI LAI ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "20pt"

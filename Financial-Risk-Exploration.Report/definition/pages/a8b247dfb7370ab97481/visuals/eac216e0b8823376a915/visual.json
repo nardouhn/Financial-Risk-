@@ -1,0 +1,263 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "eac216e0b8823376a915",
+  "position": {
+    "x": 1159.4830241746467,
+    "y": 122.65988080091073,
+    "z": 12000,
+    "height": 455,
+    "width": 715,
+    "tabOrder": 12000
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TaiSanNganHan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TaiSanNganHan",
+              "nativeQueryRef": "TaiSanNganHan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "NoNganHan"
+                }
+              },
+              "queryRef": "FactBankruptcy.NoNganHan",
+              "nativeQueryRef": "NoNganHan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongNoPhaiTra"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongNoPhaiTra",
+              "nativeQueryRef": "TongNoPhaiTra"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "TongTaiSan"
+                }
+              },
+              "queryRef": "FactBankruptcy.TongTaiSan",
+              "nativeQueryRef": "TongTaiSan"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanRong"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanRong",
+              "nativeQueryRef": "LoiNhuanRong"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "LoiNhuanGiuLai"
+                }
+              },
+              "queryRef": "FactBankruptcy.LoiNhuanGiuLai",
+              "nativeQueryRef": "LoiNhuanGiuLai"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "VonHoaThiTruong"
+                }
+              },
+              "queryRef": "FactBankruptcy.VonHoaThiTruong",
+              "nativeQueryRef": "VonHoaThiTruong"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'\n# ============================================================\n# HEATMAP 2 – SPEARMAN CORRELATION\n# COMPACT LAYOUT | RED-PINK GRADIENT\n# ============================================================\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import LinearSegmentedColormap\n\n# ------------------------------------------------------------\n# 1. COLORS\n# ------------------------------------------------------------\nINK = ''#252525''\nBG = ''#FFF7F7''\n\nCMAP_DIV = LinearSegmentedColormap.from_list(\n    ''rose_red_gradient'',\n    [''#FFE4E6'', ''#FDA4AF'', ''#F43F5E'', ''#E11D48'', ''#991B1B''],\n    N=256\n)\n\n# ------------------------------------------------------------\n# 2. CHECK INPUT DATA\n# ------------------------------------------------------------\nrequired_cols = [\n    ''TaiSanNganHan'', ''NoNganHan'', ''TongNoPhaiTra'',\n    ''TongTaiSan'', ''LoiNhuanRong'', ''LoiNhuanGiuLai'',\n    ''VonHoaThiTruong''\n]\n\nmissing_cols = [c for c in required_cols if c not in dataset.columns]\n\nif missing_cols:\n    raise ValueError(f''Thiếu các cột trong dataset: {missing_cols}'')\n\ndf = dataset.copy()\n\nfor col in required_cols:\n    df[col] = pd.to_numeric(df[col], errors=''coerce'')\n\ntotal_assets = df[''TongTaiSan''].replace(0, np.nan)\ncurrent_liabilities = df[''NoNganHan''].replace(0, np.nan)\ntotal_liabilities = df[''TongNoPhaiTra''].replace(0, np.nan)\n\n# ------------------------------------------------------------\n# 3. CALCULATE 7 FINANCIAL RATIOS\n# ------------------------------------------------------------\ndf[''Liquidity_Ratio''] = df[''TaiSanNganHan''] / current_liabilities\ndf[''Leverage_Ratio''] = df[''TongNoPhaiTra''] / total_assets\ndf[''ROA''] = df[''LoiNhuanRong''] / total_assets\ndf[''Retained_Earnings_Ratio''] = df[''LoiNhuanGiuLai''] / total_assets\ndf[''CurrentAssets_Ratio''] = df[''TaiSanNganHan''] / total_assets\n\nmarket_to_liabilities = df[''VonHoaThiTruong''] / total_liabilities\n\ndf[''MarketValue_Liabilities''] = np.where(\n    market_to_liabilities > 0,\n    np.log10(market_to_liabilities),\n    np.nan\n)\n\ndf[''Log_TotalAssets''] = np.where(\n    df[''TongTaiSan''] > 0,\n    np.log10(df[''TongTaiSan'']),\n    np.nan\n)\n\n# ------------------------------------------------------------\n# 4. SPEARMAN CORRELATION\n# ------------------------------------------------------------\nRATIO_COLS = [\n    ''Liquidity_Ratio'',\n    ''Leverage_Ratio'',\n    ''ROA'',\n    ''Retained_Earnings_Ratio'',\n    ''CurrentAssets_Ratio'',\n    ''MarketValue_Liabilities'',\n    ''Log_TotalAssets''\n]\n\nLABELS = [\n    ''Liquidity\\nRatio'',\n    ''Leverage\\nRatio'',\n    ''ROA'',\n    ''Retained\\nEarnings\\nRatio'',\n    ''Current\\nAssets\\nRatio'',\n    ''Market Value\\n/ Liabilities'',\n    ''Log Total\\nAssets''\n]\n\ncorr = (\n    df[RATIO_COLS]\n    .replace([np.inf, -np.inf], np.nan)\n    .corr(method=''spearman'')\n)\n\ncorr_values = corr.to_numpy()\nn = len(LABELS)\n\nmask = np.triu(np.ones_like(corr_values, dtype=bool))\nmasked_corr = np.ma.array(corr_values, mask=mask)\n\n# ------------------------------------------------------------\n# 5. FIGURE – REDUCE OUTER PADDING\n# ------------------------------------------------------------\nfig = plt.figure(figsize=(10, 7), dpi=150, facecolor=BG)\n\n# [left, bottom, width, height]\nax = fig.add_axes([0.15, 0.16, 0.60, 0.72])\nax.set_facecolor(BG)\n\nim = ax.imshow(\n    masked_corr,\n    cmap=CMAP_DIV,\n    vmin=-1,\n    vmax=1,\n    aspect=''equal'',\n    interpolation=''nearest''\n)\n\n# ------------------------------------------------------------\n# 6. CELL GRID\n# ------------------------------------------------------------\nax.set_xticks(np.arange(-0.5, n, 1), minor=True)\nax.set_yticks(np.arange(-0.5, n, 1), minor=True)\n\nax.grid(which=''minor'', color=''white'', linewidth=1.3)\nax.tick_params(which=''minor'', bottom=False, left=False)\n\n# ------------------------------------------------------------\n# 7. AXIS LABELS\n# ------------------------------------------------------------\nax.set_xticks(np.arange(n))\nax.set_yticks(np.arange(n))\n\nax.set_xticklabels(\n    LABELS,\n    fontsize=9,\n    fontweight=''medium'',\n    color=INK,\n    rotation=0,\n    ha=''center'',\n    linespacing=1.0\n)\n\nax.set_yticklabels(\n    LABELS,\n    fontsize=9,\n    fontweight=''medium'',\n    color=INK,\n    rotation=0,\n    va=''center'',\n    ha=''right'',\n    linespacing=1.0\n)\n\nax.tick_params(axis=''x'', length=0, pad=4)\nax.tick_params(axis=''y'', length=0, pad=4)\n\nax.set_xlim(-0.5, n - 0.5)\nax.set_ylim(n - 0.5, -0.5)\n\nfor spine in ax.spines.values():\n    spine.set_visible(False)\n\n# ------------------------------------------------------------\n# 8. CORRELATION VALUES\n# ------------------------------------------------------------\nfor i in range(n):\n    for j in range(i):\n        value = corr_values[i, j]\n\n        if np.isfinite(value):\n            rgba = CMAP_DIV((value + 1) / 2)\n            luminance = (\n                0.299 * rgba[0]\n                + 0.587 * rgba[1]\n                + 0.114 * rgba[2]\n            )\n\n            text_color = ''white'' if luminance < 0.55 else INK\n\n            ax.text(\n                j, i,\n                f''{value:.2f}'',\n                ha=''center'',\n                va=''center'',\n                fontsize=10,\n                fontweight=''bold'',\n                color=text_color\n            )\n\n# ------------------------------------------------------------\n# 9. MAIN TITLE – FONT SIZE 20\n# ------------------------------------------------------------\nfig.suptitle(\n    ''Hệ số tương quan 7 chỉ số tài chính'',\n    fontsize=21,\n    fontweight=''bold'',\n    color=INK,\n    y=0.97\n)\n\n# ------------------------------------------------------------\n# 10. COLORBAR – CLOSER TO HEATMAP\n# ------------------------------------------------------------\ncax = fig.add_axes([0.87, 0.27, 0.016, 0.50])\n\ncbar = fig.colorbar(im, cax=cax)\ncbar.outline.set_visible(False)\n\ncbar.set_label(\n    ''Spearman Correlation'',\n    fontsize=8,\n    fontweight=''medium'',\n    color=INK,\n    labelpad=4\n)\n\ncbar.ax.tick_params(\n    labelsize=8,\n    length=2,\n    pad=2,\n    colors=INK\n)\n\n# ------------------------------------------------------------\n# 11. RENDER\n# ------------------------------------------------------------\nplt.show()\n'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Hệ số tương quan bảy tỉ số'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

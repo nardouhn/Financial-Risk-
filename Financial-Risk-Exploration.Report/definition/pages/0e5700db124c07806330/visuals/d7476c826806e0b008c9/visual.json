@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "d7476c826806e0b008c9",
   "position": {
     "x": 260,
     "y": 0,
-    "z": 8000,
+    "z": 7000,
     "height": 92.5,
     "width": 1660,
-    "tabOrder": 7000
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "textbox",
@@ -19,7 +19,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "COMPANY SIZE ",
+                    "value": "SO SÁNH PHÁ SẢN",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "20pt",
+                      "color": "#4d0e0e"
+                    }
+                  },
+                  {
+                    "value": " ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "20pt"

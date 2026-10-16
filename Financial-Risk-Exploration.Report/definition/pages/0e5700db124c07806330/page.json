@@ -1,10 +1,50 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "0e5700db124c07806330",
-  "displayName": "04-Bankruptcy Comparison",
+  "displayName": "So sánh phá sản",
   "displayOption": "FitToPage",
   "height": 1080,
   "width": 1920,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "07b2aa3d30eb760c9929",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBankruptcy"
+              }
+            },
+            "Property": "Nam"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "fa64072d9b4c0170e086",
+    "type": "Drillthrough",
+    "parameters": [
+      {
+        "name": "f193c083e0d8aed10291",
+        "boundFilter": "07b2aa3d30eb760c9929",
+        "asAggregation": true,
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactBankruptcy"
+              }
+            },
+            "Property": "Nam"
+          }
+        }
+      }
+    ]
+  },
   "objects": {
     "background": [
       {
@@ -23,5 +63,17 @@
         }
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "a0f3c69581555acdb333",
+      "target": "928991b690cfa229a62f",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a0f3c69581555acdb333",
+      "target": "dcae7800f51a87d53582",
+      "type": "NoFilter"
+    }
+  ]
 }

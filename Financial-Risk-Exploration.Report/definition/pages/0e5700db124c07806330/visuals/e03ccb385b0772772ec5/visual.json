@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "e03ccb385b0772772ec5",
   "position": {
     "x": 322.5,
     "y": 62.5,
-    "z": 9000,
+    "z": 8000,
     "height": 20,
     "width": 1597.5,
-    "tabOrder": 9000
+    "tabOrder": 8000
   },
   "visual": {
     "visualType": "textbox",
@@ -19,10 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "General metrics & distributions of US corporate risk status (1999–2018)",
+                    "value": "Công ty phá sản khác công ty bình thường ở điểm nào trước thời điểm phá sản?",
                     "textStyle": {
-                      "fontSize": "10pt",
-                      "color": "#64748b"
+                      "fontSize": "12pt"
                     }
                   }
                 ]

@@ -1,0 +1,238 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "3fdf69d4b4ec313edc6d",
+  "position": {
+    "x": 282.5,
+    "y": 270,
+    "z": 14000,
+    "height": 465,
+    "width": 937.5,
+    "tabOrder": 14000
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Liquidity_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.Liquidity_Ratio",
+              "nativeQueryRef": "Liquidity_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Leverage_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.Leverage_Ratio",
+              "nativeQueryRef": "Leverage_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "ROA"
+                }
+              },
+              "queryRef": "FactBankruptcy.ROA",
+              "nativeQueryRef": "ROA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Retained_Earnings_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.Retained_Earnings_Ratio",
+              "nativeQueryRef": "Retained_Earnings_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "CurrentAssets_Ratio"
+                }
+              },
+              "queryRef": "FactBankruptcy.CurrentAssets_Ratio",
+              "nativeQueryRef": "CurrentAssets_Ratio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "MarketValue_Liabilities"
+                }
+              },
+              "queryRef": "FactBankruptcy.MarketValue_Liabilities",
+              "nativeQueryRef": "MarketValue_Liabilities"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactBankruptcy"
+                    }
+                  },
+                  "Property": "Log_TotalAssets"
+                }
+              },
+              "queryRef": "FactBankruptcy.Log_TotalAssets",
+              "nativeQueryRef": "Log_TotalAssets"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\nimport textwrap\n\nRATIOS = [\n    ''Liquidity_Ratio'', ''Leverage_Ratio'', ''ROA'',\n    ''Retained_Earnings_Ratio'', ''CurrentAssets_Ratio'',\n    ''MarketValue_Liabilities'', ''Log_TotalAssets''\n]\n\nLABEL = {\n    ''Liquidity_Ratio'': ''Thanh toan hien hanh'',\n    ''Leverage_Ratio'': ''Tong no / Tong TS'',\n    ''ROA'': ''ROA'',\n    ''Retained_Earnings_Ratio'': ''LN giu lai / Tong TS'',\n    ''CurrentAssets_Ratio'': ''TS ngan han / Tong TS'',\n    ''MarketValue_Liabilities'': ''Von hoa / Tong no'',\n    ''Log_TotalAssets'': ''Log tong tai san''\n}\n\n# MINT & CORAL\nBOX_FILL = ''#D9F0E8''\nBOX_EDGE = ''#218C74''\nMEDIAN = ''#B42345''\nWHISKER = ''#E76F7A''\nFLIER = ''#D94F70''\nINK = ''#252525''\nMUTED = ''#667085''\nGRID = ''#E8EDF2''\n\nHEAVY = [\n    ''Liquidity_Ratio'', ''Leverage_Ratio'', ''ROA'',\n    ''Retained_Earnings_Ratio''\n]\n\nmissing = [c for c in RATIOS if c not in dataset.columns]\n\nif missing:\n    fig, ax = plt.subplots(figsize=(8, 3))\n    ax.text(\n        0.02, 0.95, ''Thieu cot: '' + '', ''.join(missing),\n        va=''top'', fontsize=12, wrap=True\n    )\n    ax.axis(''off'')\n    plt.show()\n\nelse:\n    data = dataset[RATIOS].apply(pd.to_numeric, errors=''coerce'')\n\n    # Khung gon hon\n    fig, axes = plt.subplots(\n        1, 7, figsize=(15, 6), dpi=150\n    )\n    fig.patch.set_facecolor(''white'')\n\n    for ax, c in zip(axes, RATIOS):\n        s = data[c].replace([np.inf, -np.inf], np.nan).dropna()\n        ax.set_facecolor(''white'')\n\n        if len(s) == 0:\n            ax.text(\n                0.5, 0.5, ''Khong co du lieu'',\n                ha=''center'', va=''center'',\n                transform=ax.transAxes, fontsize=10\n            )\n            ax.set_title(LABEL[c], fontsize=11, pad=3)\n            ax.set_xticks([])\n            ax.set_yticks([])\n            continue\n\n        ax.boxplot(\n            s,\n            widths=0.65,\n            whis=1.5,\n            patch_artist=True,\n            showfliers=True,\n            boxprops=dict(\n                facecolor=BOX_FILL,\n                edgecolor=BOX_EDGE,\n                linewidth=1.5\n            ),\n            medianprops=dict(color=MEDIAN, linewidth=2.5),\n            whiskerprops=dict(color=WHISKER, linewidth=1.2),\n            capprops=dict(color=WHISKER, linewidth=1.2),\n            flierprops=dict(\n                marker=''o'', markersize=2,\n                markerfacecolor=FLIER,\n                markeredgecolor=''none'', alpha=0.35\n            )\n        )\n\n        if c in HEAVY:\n            ax.set_yscale(''symlog'', linthresh=1)\n\n        # Tieu de to, khoang cach nho\n        ax.set_title(\n            ''\\n''.join(textwrap.wrap(LABEL[c], width=15)),\n            fontsize=11,\n            color=INK,\n            fontweight=''bold'',\n            pad=4\n        )\n\n        ax.set_xticks([])\n        ax.yaxis.grid(True, color=GRID, linewidth=0.6)\n        ax.set_axisbelow(True)\n\n        for side in [''top'', ''right'', ''bottom'']:\n            ax.spines[side].set_visible(False)\n\n        ax.spines[''left''].set_color(''#D0D5DD'')\n        ax.spines[''left''].set_linewidth(0.6)\n\n        ax.tick_params(\n            axis=''y'', labelsize=10,\n            length=0, colors=MUTED, pad=1\n        )\n\n    # Giam padding cac phia\n    fig.subplots_adjust(\n        left=0.035,\n        right=0.998,\n        top=0.91,\n        bottom=0.035,\n        wspace=0.22\n    )\n\n    plt.show()'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Boxplot thể hiện ngoại lai của 7 tỉ số'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "5D"
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "5D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

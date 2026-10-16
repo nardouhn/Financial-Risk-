@@ -4,13 +4,13 @@ table FactBankruptcy
 	measure 'Total Records' =
 			
 			COUNTROWS(FactBankruptcy)
-		formatString: 0
+		formatString: #,0
 		lineageTag: 2b48b9e2-6106-4056-a9ef-577899bfa92a
 
 	measure 'Total Companies' =
 			
 			DISTINCTCOUNT(FactBankruptcy[MaCongTy])
-		formatString: 0
+		formatString: #,0
 		lineageTag: 03a1962e-fec0-4575-a1ba-2e93e69c16bb
 
 	measure 'Failed Records' =
@@ -33,14 +33,9 @@ table FactBankruptcy
 
 	measure 'Bankruptcy Rate' =
 			
-			DIVIDE(
-			    [Failed Records],
-			    [Total Records],
-			    0
-			)
+			DIVIDE ( SUM ( FactBankruptcy[PhaSanNamToi] ), COUNTROWS ( FactBankruptcy ) )
+		formatString: 0.00%;-0.00%;0.00%
 		lineageTag: 9abd76c7-2ff9-41d6-a5f1-e4beb8e8e243
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Min Year' =
 			
@@ -98,38 +93,23 @@ table FactBankruptcy
 
 	measure 'Bankruptcy Rate TLTA > 1' =
 			
-			DIVIDE(
-			    CALCULATE(
-			        COUNTROWS(FactBankruptcy),
-			        FactBankruptcy[Leverage_Ratio] > 1,
-			        FactBankruptcy[TrangThaiPhaSan] = "failed"
-			    ),
-			    CALCULATE(
-			        COUNTROWS(FactBankruptcy),
-			        FactBankruptcy[Leverage_Ratio] > 1
-			    ),
-			    0
+			DIVIDE (
+			    CALCULATE ( SUM ( FactBankruptcy[PhaSanNamToi] ), FactBankruptcy[Leverage_Ratio] > 1 ),
+			    CALCULATE ( COUNTROWS ( FactBankruptcy ),         FactBankruptcy[Leverage_Ratio] > 1 )
 			)
 		lineageTag: 338dc07d-7dbf-4f4e-887d-6db8e5187cb3
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Bankruptcy Rate TLTA <' =
-			1 =
-			DIVIDE(
-			    CALCULATE(
-			        COUNTROWS(FactBankruptcy),
-			        FactBankruptcy[Leverage_Ratio] <= 1,
-			        FactBankruptcy[TrangThaiPhaSan] = "failed"
-			    ),
-			    CALCULATE(
-			        COUNTROWS(FactBankruptcy),
-			        FactBankruptcy[Leverage_Ratio] <= 1
-			    ),
-			    0
+	measure 'Bankruptcy Rate TLTA < 1' =
+			
+			DIVIDE (
+			    CALCULATE ( SUM ( FactBankruptcy[PhaSanNamToi] ), FactBankruptcy[Leverage_Ratio] <= 1 ),
+			    CALCULATE ( COUNTROWS ( FactBankruptcy ),         FactBankruptcy[Leverage_Ratio] <= 1 )
 			)
-		formatString: """TRUE"";""TRUE"";""FALSE"""
 		lineageTag: b478764a-93e5-46c5-abe2-61905bedf4bd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Average Total Assets' =
 			
@@ -144,6 +124,411 @@ table FactBankruptcy
 		lineageTag: 83616cdc-b46e-4380-aaec-82d41544848f
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure TyLePhaSan_TheoSize = ```
+			
+			VAR SoCongTyPhaSan = CALCULATE(COUNTROWS('FactBankruptcy'), 'FactBankruptcy'[TrangThaiPhaSan] = "failed")
+			VAR TongSoCongTy_BoQuaFilter = CALCULATE(COUNTROWS('FactBankruptcy'), REMOVEFILTERS('FactBankruptcy'[TrangThaiPhaSan]))
+			RETURN 
+			DIVIDE(SoCongTyPhaSan, TongSoCongTy_BoQuaFilter, 0)
+			```
+		lineageTag: a6e1e3e1-b227-4de9-a275-dfff1fec3685
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Med Chon' =
+			
+			CALCULATE (
+			    [Med Chon All],
+			    FactBankruptcy[TrangThaiPhaSan] = "failed"
+			)
+		lineageTag: 7b9ea938-d783-4825-8424-9820df01f7ab
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Med Failed' = ```
+			
+			CALCULATE (
+			    [Med Chon],
+			    FactBankruptcy[PhaSanNamToi] = 1
+			)
+			
+			```
+		lineageTag: 14b213ac-42d6-4e84-be03-2689010a75f7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Med Alive' = ```
+			
+			CALCULATE (
+			    [Med Chon All],
+			    FactBankruptcy[PhaSanNamToi] = 0
+			)
+			
+			```
+		lineageTag: f61e92d6-cfba-47f7-85e9-d33aef0431fa
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TT No Ngan Han' = ```
+			
+			AVERAGEX (
+			    FactBankruptcy,
+			    DIVIDE (
+			        FactBankruptcy[CS_NH],
+			        FactBankruptcy[CS_Tong]
+			    )
+			)
+			
+			```
+		lineageTag: 1154211b-9aa8-4e4e-b70b-d4fcbf57088c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TT No Dai Han' = ```
+			
+			AVERAGEX (
+			    FactBankruptcy,
+			    DIVIDE (
+			        FactBankruptcy[CS_DH],
+			        FactBankruptcy[CS_Tong]
+			    )
+			)
+			
+			```
+		lineageTag: 6fecb81d-fd8a-4df3-86ae-983577b14f26
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TT No Khac' = ```
+			
+			AVERAGEX (
+			    FactBankruptcy,
+			    DIVIDE (
+			        FactBankruptcy[CS_Khac],
+			        FactBankruptcy[CS_Tong]
+			    )
+			)
+			
+			```
+		lineageTag: 7f3b371f-3fe6-4dec-bb5d-c3c75e4f5401
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TT Von Chu' = ```
+			
+			AVERAGEX (
+			    FactBankruptcy,
+			    DIVIDE (
+			        FactBankruptcy[CS_VCSH],
+			        FactBankruptcy[CS_Tong]
+			    )
+			)
+			
+			```
+		lineageTag: 11b5d9e6-2cfd-4349-83a4-3d342ade2f02
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rate theo Decile TS' = ```
+			
+			VAR k =
+			    SELECTEDVALUE ( dim_decile[Value] )
+			VAR lo =
+			    IF (
+			        k = 1,
+			        -1E+99,
+			        CALCULATE (
+			            PERCENTILE.INC (
+			                FactBankruptcy[TongTaiSan],
+			                ( k - 1 ) / 10
+			            ),
+			            REMOVEFILTERS ( FactBankruptcy )
+			        )
+			    )
+			VAR hi =
+			    CALCULATE (
+			        PERCENTILE.INC (
+			            FactBankruptcy[TongTaiSan],
+			            k / 10
+			        ),
+			        REMOVEFILTERS ( FactBankruptcy )
+			    )
+			RETURN
+			    CALCULATE (
+			        [Bankruptcy Rate],
+			        FILTER (
+			            ALL ( FactBankruptcy[TongTaiSan] ),
+			            FactBankruptcy[TongTaiSan] > lo
+			                && FactBankruptcy[TongTaiSan] <= hi
+			        )
+			    )
+			
+			```
+		lineageTag: 66fbf9e4-c895-4e66-b8b0-1d67d6270836
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rate theo Decile VonHoa' = ```
+			
+			VAR k =
+			    SELECTEDVALUE ( dim_decile[Value] )
+			VAR lo =
+			    IF (
+			        k = 1,
+			        -1E+99,
+			        CALCULATE (
+			            PERCENTILE.INC (
+			                FactBankruptcy[VonHoaThiTruong],
+			                ( k - 1 ) / 10
+			            ),
+			            REMOVEFILTERS ( FactBankruptcy )
+			        )
+			    )
+			VAR hi =
+			    CALCULATE (
+			        PERCENTILE.INC (
+			            FactBankruptcy[VonHoaThiTruong],
+			            k / 10
+			        ),
+			        REMOVEFILTERS ( FactBankruptcy )
+			    )
+			RETURN
+			    CALCULATE (
+			        [Bankruptcy Rate],
+			        FILTER (
+			            ALL ( FactBankruptcy[VonHoaThiTruong] ),
+			            FactBankruptcy[VonHoaThiTruong] > lo
+			                && FactBankruptcy[VonHoaThiTruong] <= hi
+			        )
+			    )
+			
+			```
+		lineageTag: 30c38e04-2ab2-421b-9d78-86ae22b7a17d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Nguong Top10' = ```
+			
+			CALCULATE (
+			    PERCENTILE.INC (
+			        FactBankruptcy[TongTaiSan],
+			        0.9
+			    ),
+			    REMOVEFILTERS ( FactBankruptcy )
+			)
+			
+			```
+		lineageTag: 399913a5-e6b6-4414-b086-4af5644ad5b4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Med Top10' = ```
+			
+			VAR th = [Nguong Top10]
+			RETURN
+			    CALCULATE (
+			        [Med Chon],
+			        FILTER (
+			            ALL ( FactBankruptcy[TongTaiSan] ),
+			            FactBankruptcy[TongTaiSan] >= th
+			        )
+			    )
+			
+			```
+		lineageTag: f4eff24b-0e16-4a80-8bde-5ca9966bc558
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Med Con Lai' = ```
+			
+			VAR th = [Nguong Top10]
+			RETURN
+			    CALCULATE (
+			        [Med Chon],
+			        FILTER (
+			            ALL ( FactBankruptcy[TongTaiSan] ),
+			            FactBankruptcy[TongTaiSan] < th
+			        )
+			    )
+			
+			```
+		lineageTag: 382c36ec-7afb-49fc-a2bb-e4b5f717d91b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chenh Lech' = ```
+			
+			[Med Top10] - [Med Con Lai]
+			
+			```
+		lineageTag: b8a02e82-b9ff-4f8d-9fe6-1b3bbe410c20
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Med Chon Alive' = ```
+			
+			CALCULATE (
+			    [Med Chon All],
+			    FactBankruptcy[TrangThaiPhaSan] = "alive",
+			    REMOVEFILTERS ( FactBankruptcy[SoNamTruocPS] )
+			)
+			
+			
+			
+			```
+		lineageTag: b26eafe2-47b4-4f38-a26d-6e58c034dd05
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Med Chon All' = ```
+			
+			SWITCH (
+			    SELECTEDVALUE ( TySo_Chon[TySo], "Leverage_Ratio" ),
+			    "MarketValue_Liabilities", MEDIAN ( FactBankruptcy[MarketValue_Liabilities] ),
+			    "Leverage_Ratio", MEDIAN ( FactBankruptcy[Leverage_Ratio] ),
+			    "ROA", MEDIAN ( FactBankruptcy[ROA] ),
+			    "Liquidity_Ratio", MEDIAN ( FactBankruptcy[Liquidity_Ratio] ),
+			    "Retained_Earnings_Ratio", MEDIAN ( FactBankruptcy[Retained_Earnings_Ratio] ),
+			    "CurrentAssets_Ratio", MEDIAN ( FactBankruptcy[CurrentAssets_Ratio] ),
+			    "Log_TotalAssets", MEDIAN ( FactBankruptcy[Log_TotalAssets] )
+			)
+			
+			```
+		lineageTag: 3767c51c-d5e9-4cc1-bb0c-2d359fc77c9e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rate VonHoa Thap Nhat' = CALCULATE ( [Rate theo Decile VonHoa], dim_decile[Value] = 1 )
+		lineageTag: f9ab0608-93ad-4b00-a821-9e39eeb10073
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rate VonHoa Cao Nhat' = CALCULATE ( [Rate theo Decile VonHoa], dim_decile[Value] = 10 )
+		lineageTag: b3060a2c-bdcb-4ea9-afef-22e09fb07613
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TS P25' = PERCENTILE.INC ( FactBankruptcy[TongTaiSan], 0.25 )
+		lineageTag: 5a26d4f7-32b4-486a-b06e-0d725fd10df3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TS Median' = MEDIAN ( FactBankruptcy[TongTaiSan] )
+		lineageTag: e0447e91-7103-4dd6-a624-f98eb29a9810
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TS P75' = PERCENTILE.INC ( FactBankruptcy[TongTaiSan], 0.75 )
+		lineageTag: 7324e2ff-6904-411e-84fe-6787aab93f01
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'PS Rate Theo Decile Von Hoa' =
+			
+			CALCULATE (
+			    [Bankruptcy Rate],
+			    TREATAS (
+			        VALUES ( dim_decile[Value] ),
+			        FactBankruptcy[Decile_VonHoa]
+			    )
+			)
+		lineageTag: da7b1c6a-2aee-4caa-ab15-5a1123b14931
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'PS Von Hoa Thap Nhat' =
+			
+			CALCULATE (
+			    [Bankruptcy Rate],
+			    FactBankruptcy[Decile_VonHoa] = 1
+			)
+		lineageTag: bb2ff80f-a591-4535-84c1-1c1edd0b94f5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'PS Von Hoa Cao Nhat' =
+			
+			CALCULATE (
+			    [Bankruptcy Rate],
+			    FactBankruptcy[Decile_VonHoa] = 10
+			)
+		lineageTag: 0ef11c8f-11b3-4bed-8b57-ac4ac2744566
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'PS Rate Chung' = ```
+			
+			CALCULATE (
+			    [Bankruptcy Rate],
+			    REMOVEFILTERS ( FactBankruptcy[Decile_VonHoa] ),
+			    REMOVEFILTERS ( dim_decile )
+			)
+			
+			```
+		lineageTag: 094232da-df32-473a-aed2-efc4747a3b3f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Bankruptcy Events' =
+			
+			CALCULATE ( COUNTROWS ( FactBankruptcy ), FactBankruptcy[PhaSanNamToi] = 1 )
+		formatString: #,0
+		lineageTag: 24bcec18-9a4c-4ca0-9b53-b79deb19a54b
+
+	measure 'Failed Companies' =
+			
+			CALCULATE ( DISTINCTCOUNT ( FactBankruptcy[MaCongTy] ), FactBankruptcy[TrangThaiPhaSan] = "failed" )
+		formatString: #,0
+		lineageTag: 854a90fe-51cc-4fa2-bcf0-31c814335293
+
+	measure 'Event Rate' =
+			
+			DIVIDE ( [Bankruptcy Events], [Total Records] )
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f561f4a2-3ec6-40eb-bb9f-3b5e0ecb6bfb
+
+	measure 'Event Rate Tooltip' =
+			
+			FORMAT ( [Bankruptcy Events], "0" ) & " vụ phá sản / "
+			    & FORMAT ( [Total Records], "0" ) & " công ty báo cáo = "
+			    & FORMAT ( [Event Rate], "0.00%", "vi-VN" )
+		lineageTag: 4a3d91a8-8f4c-4916-a83d-78db3bec6965
+
+	measure 'Event Rate Average' =
+			
+			CALCULATE ( [Event Rate], ALLSELECTED ( FactBankruptcy[Nam] ) )
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: ede8dac0-e717-4f5c-8ae6-fa77b57e5fae
+
+	measure 'Tổng tài sản nhỏ hơn 10' =
+			
+			DIVIDE (
+			    COUNTROWS ( FILTER ( FactBankruptcy, FactBankruptcy[TongTaiSan] < 10 ) ),
+			    COUNTROWS ( FactBankruptcy )
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: ab0c7319-c367-48b0-8529-8854290f707e
+
+	measure 'Số dòng bị loại' = 29
+		formatString: 0
+		lineageTag: 563b2d55-8e6b-49ee-aeee-dd1b0b73ee5e
+
+	measure 'Vi phạm đồng nhất thức' = 8
+		formatString: 0
+		lineageTag: 2e79c516-31b1-49e3-8d5e-f0b06590dd1e
+
+	measure 'Tỉ số có ngoại lai lớn nhất' = 0.143
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: e736cc54-5054-4d0d-a74e-23be718fc132
+
+	measure 'Hệ số tương quan cao nhất của biến thô' = 0.97
+		formatString: 0.00
+		lineageTag: fde16a60-5d8d-47c6-80ef-a3535ac79ea9
+
+	measure 'Hệ số tương quan cao nhất của 7 tỉ số' = 0.71
+		formatString: 0.00
+		lineageTag: 95483cb0-da07-4bb9-8008-06cf041f92b0
 
 	column MaCongTy
 		dataType: string
@@ -436,6 +821,8 @@ table FactBankruptcy
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"FactBankruptcy","TableItemName":"Log_TotalAssets (bins)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
 	column MarketValue_Liabilities
 		dataType: double
 		lineageTag: d8a71c6c-5625-4069-91d0-90d5b9f0ce98
@@ -454,11 +841,285 @@ table FactBankruptcy
 
 		annotation SummarizationSetBy = Automatic
 
+	column 'Log_TotalAssets (bins)' =
+			IF(
+				ISBLANK('FactBankruptcy'[Log_TotalAssets]),
+				BLANK(),
+				IF(
+					'FactBankruptcy'[Log_TotalAssets] >= 0,
+					ROUNDDOWN('FactBankruptcy'[Log_TotalAssets] / 0.5, 0) * 0.5,
+					ROUNDUP('FactBankruptcy'[Log_TotalAssets] / 0.5, 0) * 0.5
+				)
+			)
+		lineageTag: 3ed77f34-6f93-4812-b96e-097fdeff0065
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "FactBankruptcy"
+				          }
+				        },
+				        "Property": "Log_TotalAssets"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 0.5,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"f","Entity":"FactBankruptcy"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"f"}},"Property":"Log_TotalAssets"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"f"}},"Property":"Log_TotalAssets"}},"Size":0.5}}}}
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Size_Group =
+			
+			SWITCH(
+			    TRUE(),
+			    FactBankruptcy[Log_TotalAssets] < 2, "Small",
+			    FactBankruptcy[Log_TotalAssets] < 3, "Medium",
+			    "Large"
+			)
+		lineageTag: bf4a358b-35f1-4a96-b62e-e383bd7efba1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inv_TA
+		dataType: double
+		lineageTag: 3db5c9f8-328f-4336-955c-a8d0ee48c778
+		summarizeBy: sum
+		sourceColumn: Inv_TA
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Company_Year =
+			
+			FactBankruptcy[MaCongTy] & "-" &
+			FORMAT(FactBankruptcy[Nam], "0")
+		lineageTag: b99c929d-4994-44ce-8bb6-e5c7a091b517
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column GiaiDoan = ```
+			
+			SWITCH (
+			    TRUE (),
+			    FactBankruptcy[Nam] <= 2002, "1999–2002",
+			    FactBankruptcy[Nam] <= 2007, "2003–2007",
+			    FactBankruptcy[Nam] <= 2010, "2008–2010",
+			    "2011–2018"
+			)
+			
+			```
+		lineageTag: 04a1274c-ea4a-4646-8004-7da97a741977
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Leverage_Bin = ```
+			
+			SWITCH (
+			    TRUE (),
+			    FactBankruptcy[Leverage_Ratio] < 0.3, "< 0,3",
+			    FactBankruptcy[Leverage_Ratio] < 0.5, "0,3 – 0,5",
+			    FactBankruptcy[Leverage_Ratio] < 0.7, "0,5 – 0,7",
+			    FactBankruptcy[Leverage_Ratio] < 0.9, "0,7 – 0,9",
+			    FactBankruptcy[Leverage_Ratio] < 1.0, "0,9 – 1,0",
+			    FactBankruptcy[Leverage_Ratio] < 1.5, "1,0 – 1,5",
+			    "≥ 1,5"
+			)
+			
+			```
+		lineageTag: 32ca62bc-c696-41c2-8408-a78af65ba927
+		summarizeBy: none
+		sortByColumn: Leverage_Order
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Leverage_Order = ```
+			
+			SWITCH (
+			    TRUE (),
+			    FactBankruptcy[Leverage_Ratio] < 0.3, 1,
+			    FactBankruptcy[Leverage_Ratio] < 0.5, 2,
+			    FactBankruptcy[Leverage_Ratio] < 0.7, 3,
+			    FactBankruptcy[Leverage_Ratio] < 0.9, 4,
+			    FactBankruptcy[Leverage_Ratio] < 1.0, 5,
+			    FactBankruptcy[Leverage_Ratio] < 1.5, 6,
+			    7
+			)
+			
+			```
+		formatString: 0
+		lineageTag: adcaf643-e7cc-4348-bcb7-372fcd43236e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nhom_PS = ```
+			
+			SWITCH (
+			    TRUE (),
+			    FactBankruptcy[TrangThaiPhaSan] = "alive",
+			        "1. Công ty không phá sản",
+			    FactBankruptcy[SoNamTruocPS] >= 3,
+			        "2. Phá sản, ≥ 3 năm trước năm cuối",
+			    FactBankruptcy[SoNamTruocPS] >= 1,
+			        "3. Phá sản, 1–2 năm trước năm cuối",
+			    "4. Năm trước phá sản"
+			)
+			
+			```
+		lineageTag: 1c9c20e5-63eb-4ef5-9292-16cc617e2807
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column CS_NH = ```
+			
+			MAX (
+			    0,
+			    DIVIDE (
+			        FactBankruptcy[NoNganHan],
+			        FactBankruptcy[TongTaiSan]
+			    )
+			)
+			
+			```
+		lineageTag: 2cfa3f54-af09-48c8-82df-2a7896f5a270
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CS_DH = ```
+			
+			MAX (
+			    0,
+			    DIVIDE (
+			        FactBankruptcy[NoDaiHan],
+			        FactBankruptcy[TongTaiSan]
+			    )
+			)
+			
+			```
+		lineageTag: c8eca17e-847f-4f95-933d-d1aed807298b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CS_Khac = ```
+			
+			MAX (
+			    0,
+			    FactBankruptcy[Leverage_Ratio]
+			        - DIVIDE (
+			            FactBankruptcy[NoNganHan],
+			            FactBankruptcy[TongTaiSan]
+			        )
+			        - DIVIDE (
+			            FactBankruptcy[NoDaiHan],
+			            FactBankruptcy[TongTaiSan]
+			        )
+			)
+			
+			```
+		lineageTag: 04176946-008b-4df1-a0d1-0ebc113b0fbd
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CS_VCSH = ```
+			
+			MAX (
+			    0,
+			    1 - FactBankruptcy[Leverage_Ratio]
+			)
+			
+			```
+		lineageTag: 96125a59-7a5e-4de1-b8c7-d55b8c445612
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CS_Tong = ```
+			
+			FactBankruptcy[CS_NH]
+			    + FactBankruptcy[CS_DH]
+			    + FactBankruptcy[CS_Khac]
+			    + FactBankruptcy[CS_VCSH]
+			
+			```
+		lineageTag: 55299ecc-033d-469c-b0b6-5c36ad0a34db
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Decile_VonHoa = ```
+			
+			VAR _Rank =
+			    RANKX (
+			        ALL ( FactBankruptcy ),
+			        FactBankruptcy[VonHoaThiTruong],
+			        ,
+			        ASC,
+			        DENSE
+			    )
+			VAR _N =
+			    COUNTROWS (
+			        FILTER (
+			            ALL ( FactBankruptcy ),
+			            NOT ISBLANK ( FactBankruptcy[VonHoaThiTruong] )
+			        )
+			    )
+			RETURN
+			    IF (
+			        ISBLANK ( FactBankruptcy[VonHoaThiTruong] ),
+			        BLANK (),
+			        MIN ( 10, MAX ( 1, ROUNDUP ( DIVIDE ( _Rank * 10, _N ), 0 ) ) )
+			    )
+			
+			```
+		lineageTag: e1b313b0-2af6-4dbb-aad0-3c931e8d3711
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	partition FactBankruptcy = m
 		mode: import
 		source =
 				let
-				    Source = Csv.Document(File.Contents("C:\Users\tuyet\OneDrive\Máy tính\trực quan hóa\american_bankruptcy_clean.csv"),[Delimiter=",", Columns=24, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    Source = Csv.Document(File.Contents("C:\Users\tuyet\OneDrive\Máy tính\trực quan hóa\New folder\american_bankruptcy_clean.csv"),[Delimiter=",", Columns=24, Encoding=65001, QuoteStyle=QuoteStyle.None]),
 				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
 				    #"Change Type" = Table.TransformColumnTypes(
 				    #"Use First Row as Headers",
@@ -515,11 +1176,14 @@ table FactBankruptcy
 				    #"Added Custom7" = Table.AddColumn(#"Added Custom6", "Leverage_Group", each if [Leverage_Ratio] > 1
 				then "TL.TA > 1"
 				else "TL.TA ≤ 1"),
-				    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom7",{{"Liquidity_Ratio", type number}, {"Leverage_Ratio", type number}, {"ROA", type number}, {"Retained_Earnings_Ratio", type number}, {"CurrentAssets_Ratio", type number}, {"Log_TotalAssets", type number}, {"MarketValue_Liabilities", type number}, {"Leverage_Group", type text}})
+				    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom7",{{"Liquidity_Ratio", type number}, {"Leverage_Ratio", type number}, {"ROA", type number}, {"Retained_Earnings_Ratio", type number}, {"CurrentAssets_Ratio", type number}, {"Log_TotalAssets", type number}, {"MarketValue_Liabilities", type number}, {"Leverage_Group", type text}}),
+				    #"Added Custom8" = Table.AddColumn(#"Changed Type", "Inv_TA", each if [TongTaiSan] <> 0
+				then [HangTonKho] / [TongTaiSan]
+				else null)
 				in
-				    #"Changed Type"
+				    #"Added Custom8"
 
-	annotation PBI_ResultType = Table
+	annotation PBI_ResultType = Exception
 
 	annotation PBI_NavigationStepName = Navigation
 

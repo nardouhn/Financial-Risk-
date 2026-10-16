@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "288a6050eeca99c7db5d",
-  "displayName": "01-Overview",
+  "displayName": "Tổng Quan",
   "displayOption": "FitToPage",
   "height": 1080,
   "width": 1920,

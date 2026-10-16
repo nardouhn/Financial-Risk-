@@ -1,0 +1,22 @@
+table dim_decile
+	lineageTag: 951006e7-4741-4227-8fd7-25660ca23864
+
+	column Value
+		formatString: 0
+		lineageTag: e1c5ae4b-242d-457c-833a-5da47783d688
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_decile = calculated
+		mode: import
+		source = ```
+				
+				GENERATESERIES ( 1, 10, 1 )
+				
+				```
+
+	annotation PBI_Id = 911cf0351f33454fbcebbc358b1fddb9
+

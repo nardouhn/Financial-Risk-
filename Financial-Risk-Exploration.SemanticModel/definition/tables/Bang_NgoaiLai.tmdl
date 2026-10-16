@@ -1,0 +1,183 @@
+table Bang_NgoaiLai
+	lineageTag: 3ae4b122-0098-4aa1-98bc-58b8e2e8c34b
+
+	measure 'Dòng vi phạm tam giác' = 2
+		formatString: 0
+		lineageTag: f14c60ff-04fe-439b-8711-1bce4083a9a6
+
+	column Min
+		lineageTag: 24d7c562-a2a7-4856-917a-6957a1443be4
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Min]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Max
+		lineageTag: fbc2f3f8-e0c7-4183-9aa9-12e6e0ca7800
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Max]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Tỷ số'
+		lineageTag: 129af6ea-6892-48a7-9a60-539b098852a1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tỷ số]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngưỡng dưới'
+		formatString: 0.00
+		lineageTag: 129c3a97-5ea6-42b5-ab0c-e2e95676510e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Ngưỡng dưới]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngưỡng trên'
+		lineageTag: 454d419f-5194-4bee-b8a1-cb9b1c7c7f57
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Ngưỡng trên]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Ngoại lai dưới'
+		lineageTag: 339b3249-50b0-42c4-99a8-25d33fdbefe8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ngoại lai dưới]
+
+		annotation SummarizationSetBy = User
+
+	column 'Ngoại lai trên'
+		lineageTag: 2eb57907-fecf-4648-b898-22b471cc044e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ngoại lai trên]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tỷ lệ ngoại lai'
+		lineageTag: 1d386a4e-7e5b-4f9b-8111-c1c26509e4c6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tỷ lệ ngoại lai]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ThuTu
+		formatString: 0
+		lineageTag: df491a33-884e-4188-adce-75d5cec44b06
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [ThuTu]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Bang_NgoaiLai = calculated
+		mode: import
+		source =
+				
+				VAR _Base =
+				    UNION (
+				        ROW (
+				            "Tỷ số",           "Thanh toán hiện hành (TSNH / Nợ NH)",
+				            "Ngưỡng dưới",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q1 - 1.5 * _i,
+				            "Ngưỡng trên",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q3 + 1.5 * _i,
+				            "Ngoại lai dưới",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio] < _l ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Ngoại lai trên",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _u = _q3 + 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio] > _u ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Tỷ lệ ngoại lai", VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _u = _q3 + 1.5 * _i VAR _b = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio] < _l ) ) VAR _a = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Liquidity_Ratio] > _u ) ) VAR _p = DIVIDE ( _b + _a, COUNTROWS ( 'FactBankruptcy' ) ) VAR _s = FORMAT ( ROUND ( COALESCE ( _p, 0 ) * 100, 1 ), "0.0" ) RETURN SUBSTITUTE ( _s, ".", "," ) & "%",
+				            "Min",             MIN ( 'FactBankruptcy'[Liquidity_Ratio] ),
+				            "Max",             MAX ( 'FactBankruptcy'[Liquidity_Ratio] )
+				        ),
+				        ROW (
+				            "Tỷ số",           "Tổng nợ / Tổng TS",
+				            "Ngưỡng dưới",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q1 - 1.5 * _i,
+				            "Ngưỡng trên",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q3 + 1.5 * _i,
+				            "Ngoại lai dưới",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio] < _l ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Ngoại lai trên",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _u = _q3 + 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio] > _u ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Tỷ lệ ngoại lai", VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _u = _q3 + 1.5 * _i VAR _b = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio] < _l ) ) VAR _a = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Leverage_Ratio] > _u ) ) VAR _p = DIVIDE ( _b + _a, COUNTROWS ( 'FactBankruptcy' ) ) VAR _s = FORMAT ( ROUND ( COALESCE ( _p, 0 ) * 100, 1 ), "0.0" ) RETURN SUBSTITUTE ( _s, ".", "," ) & "%",
+				            "Min",             MIN ( 'FactBankruptcy'[Leverage_Ratio] ),
+				            "Max",             MAX ( 'FactBankruptcy'[Leverage_Ratio] )
+				        ),
+				        ROW (
+				            "Tỷ số",           "ROA (LN ròng / Tổng TS)",
+				            "Ngưỡng dưới",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.75 ) VAR _i = _q3 - _q1 RETURN _q1 - 1.5 * _i,
+				            "Ngưỡng trên",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.75 ) VAR _i = _q3 - _q1 RETURN _q3 + 1.5 * _i,
+				            "Ngoại lai dưới",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[ROA] < _l ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Ngoại lai trên",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.75 ) VAR _i = _q3 - _q1 VAR _u = _q3 + 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[ROA] > _u ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Tỷ lệ ngoại lai", VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[ROA], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _u = _q3 + 1.5 * _i VAR _b = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[ROA] < _l ) ) VAR _a = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[ROA] > _u ) ) VAR _p = DIVIDE ( _b + _a, COUNTROWS ( 'FactBankruptcy' ) ) VAR _s = FORMAT ( ROUND ( COALESCE ( _p, 0 ) * 100, 1 ), "0.0" ) RETURN SUBSTITUTE ( _s, ".", "," ) & "%",
+				            "Min",             MIN ( 'FactBankruptcy'[ROA] ),
+				            "Max",             MAX ( 'FactBankruptcy'[ROA] )
+				        ),
+				        ROW (
+				            "Tỷ số",           "LN giữ lại / Tổng TS",
+				            "Ngưỡng dưới",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q1 - 1.5 * _i,
+				            "Ngưỡng trên",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q3 + 1.5 * _i,
+				            "Ngoại lai dưới",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio] < _l ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Ngoại lai trên",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _u = _q3 + 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio] > _u ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Tỷ lệ ngoại lai", VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _u = _q3 + 1.5 * _i VAR _b = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio] < _l ) ) VAR _a = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Retained_Earnings_Ratio] > _u ) ) VAR _p = DIVIDE ( _b + _a, COUNTROWS ( 'FactBankruptcy' ) ) VAR _s = FORMAT ( ROUND ( COALESCE ( _p, 0 ) * 100, 1 ), "0.0" ) RETURN SUBSTITUTE ( _s, ".", "," ) & "%",
+				            "Min",             MIN ( 'FactBankruptcy'[Retained_Earnings_Ratio] ),
+				            "Max",             MAX ( 'FactBankruptcy'[Retained_Earnings_Ratio] )
+				        ),
+				        ROW (
+				            "Tỷ số",           "TS ngắn hạn / Tổng TS",
+				            "Ngưỡng dưới",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q1 - 1.5 * _i,
+				            "Ngưỡng trên",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.75 ) VAR _i = _q3 - _q1 RETURN _q3 + 1.5 * _i,
+				            "Ngoại lai dưới",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio] < _l ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Ngoại lai trên",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _u = _q3 + 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio] > _u ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Tỷ lệ ngoại lai", VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _u = _q3 + 1.5 * _i VAR _b = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio] < _l ) ) VAR _a = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[CurrentAssets_Ratio] > _u ) ) VAR _p = DIVIDE ( _b + _a, COUNTROWS ( 'FactBankruptcy' ) ) VAR _s = FORMAT ( ROUND ( COALESCE ( _p, 0 ) * 100, 1 ), "0.0" ) RETURN SUBSTITUTE ( _s, ".", "," ) & "%",
+				            "Min",             MIN ( 'FactBankruptcy'[CurrentAssets_Ratio] ),
+				            "Max",             MAX ( 'FactBankruptcy'[CurrentAssets_Ratio] )
+				        ),
+				        ROW (
+				            "Tỷ số",           "log10(Vốn hóa / Tổng nợ)",
+				            "Ngưỡng dưới",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.75 ) VAR _i = _q3 - _q1 RETURN _q1 - 1.5 * _i,
+				            "Ngưỡng trên",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.75 ) VAR _i = _q3 - _q1 RETURN _q3 + 1.5 * _i,
+				            "Ngoại lai dưới",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities] < _l ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Ngoại lai trên",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.75 ) VAR _i = _q3 - _q1 VAR _u = _q3 + 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities] > _u ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Tỷ lệ ngoại lai", VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _u = _q3 + 1.5 * _i VAR _b = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities] < _l ) ) VAR _a = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[MarketValue_Liabilities] > _u ) ) VAR _p = DIVIDE ( _b + _a, COUNTROWS ( 'FactBankruptcy' ) ) VAR _s = FORMAT ( ROUND ( COALESCE ( _p, 0 ) * 100, 1 ), "0.0" ) RETURN SUBSTITUTE ( _s, ".", "," ) & "%",
+				            "Min",             MIN ( 'FactBankruptcy'[MarketValue_Liabilities] ),
+				            "Max",             MAX ( 'FactBankruptcy'[MarketValue_Liabilities] )
+				        ),
+				        ROW (
+				            "Tỷ số",           "log10(Tổng tài sản)",
+				            "Ngưỡng dưới",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.75 ) VAR _i = _q3 - _q1 RETURN _q1 - 1.5 * _i,
+				            "Ngưỡng trên",     VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.75 ) VAR _i = _q3 - _q1 RETURN _q3 + 1.5 * _i,
+				            "Ngoại lai dưới",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets] < _l ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Ngoại lai trên",  VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.75 ) VAR _i = _q3 - _q1 VAR _u = _q3 + 1.5 * _i VAR _c = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets] > _u ) ) RETURN FORMAT ( COALESCE ( _c, 0 ), "#,0" ),
+				            "Tỷ lệ ngoại lai", VAR _q1 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.25 ) VAR _q3 = PERCENTILEX.INC ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets], 0.75 ) VAR _i = _q3 - _q1 VAR _l = _q1 - 1.5 * _i VAR _u = _q3 + 1.5 * _i VAR _b = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets] < _l ) ) VAR _a = COUNTROWS ( FILTER ( 'FactBankruptcy', 'FactBankruptcy'[Log_TotalAssets] > _u ) ) VAR _p = DIVIDE ( _b + _a, COUNTROWS ( 'FactBankruptcy' ) ) VAR _s = FORMAT ( ROUND ( COALESCE ( _p, 0 ) * 100, 1 ), "0.0" ) RETURN SUBSTITUTE ( _s, ".", "," ) & "%",
+				            "Min",             MIN ( 'FactBankruptcy'[Log_TotalAssets] ),
+				            "Max",             MAX ( 'FactBankruptcy'[Log_TotalAssets] )
+				        )
+				    )
+				RETURN
+				    ADDCOLUMNS (
+				        _Base,
+				        "ThuTu",
+				            SWITCH (
+				                [Tỷ số],
+				                "Thanh toán hiện hành (TSNH / Nợ NH)", 1,
+				                "Tổng nợ / Tổng TS",                   2,
+				                "ROA (LN ròng / Tổng TS)",             3,
+				                "LN giữ lại / Tổng TS",                4,
+				                "TS ngắn hạn / Tổng TS",               5,
+				                "log10(Vốn hóa / Tổng nợ)",            6,
+				                "log10(Tổng tài sản)",                 7,
+				                99
+				            )
+				    )
+
+	annotation PBI_Id = 02619c664e6242499b4af9930b571060
+

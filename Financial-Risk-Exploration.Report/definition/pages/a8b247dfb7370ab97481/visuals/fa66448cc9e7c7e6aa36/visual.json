@@ -1,0 +1,213 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "fa66448cc9e7c7e6aa36",
+  "position": {
+    "x": 277.09949908504467,
+    "y": 772.24450564684571,
+    "z": 15001,
+    "height": 286.18472856324286,
+    "width": 844.9263414724312,
+    "tabOrder": 15001
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "\t"
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "\t"
+                  },
+                  {
+                    "value": "ĐIỀU RÚT RA",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "14pt",
+                      "color": "#4d0e0e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Chỉ số thô tương quan cao vì quy mô:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  },
+                  {
+                    "value": " tổng tài sản, doanh thu, nợ, EBITDA tương quan 0,59–0,97 chỉ vì công ty lớn thì mọi chỉ tiêu đều lớn, không cho thông tin mới.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Chia cho tổng tài sản, tương quan hạ xuống:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  },
+                  {
+                    "value": " cặp mạnh nhất của 7 tỷ số chỉ còn 0,71 (Liquidity và Leverage, dấu âm), không cặp nào trùng lặp.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Các mối quan hệ đúng logic tài chính:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  },
+                  {
+                    "value": " nợ cao đi cùng vốn hóa/nợ thấp (−0,69) và thanh toán yếu (−0,71); ROA đi cùng lợi nhuận giữ lại (0,66).",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Chấm đỏ vẫn lẫn chấm xanh:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  },
+                  {
+                    "value": " công ty sắp phá sản nghiêng về nợ cao, vốn hóa thấp, nhưng không có ngưỡng nào tách sạch hai nhóm.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Hàm ý:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  },
+                  {
+                    "value": " nên dùng tỷ số thay chỉ số thô và giữ cả 7 biến. Tương quan chỉ là mối liên hệ, cần xem thêm biểu đồ, không kết luận nhân quả",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#4d0e0e"
+                    }
+                  }
+                ],
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#C9E3E1'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": 0.4
+                    }
+                  }
+                }
+              }
+            },
+            "shadowSpread": {
+              "expr": {
+                "Literal": {
+                  "Value": "5D"
+                }
+              }
+            },
+            "shadowBlur": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
